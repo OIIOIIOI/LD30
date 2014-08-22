@@ -20,6 +20,12 @@ class Main extends Sprite {
 	public function new () {
 		super();
 		
+		var s = new Sprite();
+		s.graphics.beginFill(0xFF00FF);
+		s.graphics.drawRect(0, 0, 100, 100);
+		s.graphics.endFill();
+		this.addChild(s);
+		
 		trace("ok");
 	}
 	
