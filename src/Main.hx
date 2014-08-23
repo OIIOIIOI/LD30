@@ -3,6 +3,7 @@ package ;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.Lib;
+import proto.Proto;
 
 /**
  * ...
@@ -16,7 +17,7 @@ class Main {
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		// entry point
-		trace("ok");
+		Lib.current.addChild(new Proto());
 	}
 	
 }
