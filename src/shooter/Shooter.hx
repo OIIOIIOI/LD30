@@ -1,210 +1,296 @@
 package shooter;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.Shape;
 import flash.display.Sprite;
-import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.filters.BlurFilter;
-import flash.ui.Keyboard;
 import screen.Screen;
-import shooter.entities.AnimEntity;
 import shooter.entities.Asteroid;
+import shooter.entities.Bullet;
+import shooter.entities.Enemy;
 import shooter.entities.Entity;
-import shooter.entities.Particle;
-import shooter.entities.StarShrimp;
+import shooter.entities.Player;
+import shooter.entities.Shield;
 
-/**
- * ...
+ /* ...
  * @author 01101101
  */
 
 class Shooter extends Screen {
 	
-	var entities:List<Entity>;
-	var canvas:Bitmap;
-	var canvasData:BitmapData;
+	static public var SPAWN_DELAY:Int = 90;
 	
-	var shrimp:StarShrimp;
+	var entities:Array<Entity>;
 	
-	var area:Sprite;
+	var bg:Sprite;
+	var player:Player;
 	
-	var isShooting:Bool;
 	var lockedEntity:Entity;
+	var shield:Shield;
+	
+	var spawnTimer:Int;
 	
 	public function new () {
 		super();
 		
-		new SpriteSheet();
+		bg = new Sprite();
+		bg.graphics.beginFill(0xFF00FF, 0.1);
+		bg.graphics.drawRect(0, 0, 900, 600);
+		bg.graphics.endFill();
+		addChild(bg);
+		bg.buttonMode = true;
+		bg.addEventListener(MouseEvent.CLICK, clickHandler);
 		
-		entities = new List();
+		entities = new Array();
 		
-		canvasData = new BitmapData(Const.CANVAS_WIDTH, Const.CANVAS_HEIGHT, false);
+		for (i in 0...10) {
+			var e = new Asteroid();
+			e.x = Std.random(900);
+			e.y = Std.random(600);
+			addChild(e.sprite);
+			e.sprite.addEventListener(MouseEvent.CLICK, clickHandler);
+			entities.push(e);
+		}
 		
-		canvas = new Bitmap(canvasData);
-		canvas.scaleX = canvas.scaleY = Const.CANVAS_SCALE;
-		addChild(canvas);
+		for (i in 0...3) {
+			var e = new Enemy();
+			e.x = Std.random(900);
+			e.y = Std.random(600);
+			addChild(e.sprite);
+			entities.push(e);
+		}
 		
-		shrimp = new StarShrimp();
-		shrimp.x = Const.CANVAS_WIDTH / 2;
-		shrimp.y = Const.CANVAS_HEIGHT / 2;
-		entities.add(shrimp);
+		player = new Player();
+		player.x = 450;
+		player.y = 300;
+		addChild(player.sprite);
+		entities.push(player);
 		
-		var a = new Asteroid();
-		a.x = Std.random(Const.CANVAS_WIDTH);
-		a.y = Std.random(Const.CANVAS_HEIGHT);
-		entities.add(a);
-		a = new Asteroid();
-		a.x = Std.random(Const.CANVAS_WIDTH);
-		a.y = Std.random(Const.CANVAS_HEIGHT);
-		entities.add(a);
-		a = new Asteroid();
-		a.x = Std.random(Const.CANVAS_WIDTH);
-		a.y = Std.random(Const.CANVAS_HEIGHT);
-		entities.add(a);
-		a = new Asteroid();
-		a.x = Std.random(Const.CANVAS_WIDTH);
-		a.y = Std.random(Const.CANVAS_HEIGHT);
-		entities.add(a);
+		// Collisions
+		for (i in 0...entities.length) {
+			for (j in i+1...entities.length) {
+				checkCollisions(entities[i], entities[j], true);
+			}
+		}
 		
-		area = new Sprite();
-		area.graphics.beginFill(0xFF00FF, 0);
-		area.graphics.drawRect(0, 0, Const.CANVAS_WIDTH * Const.CANVAS_SCALE, Const.CANVAS_HEIGHT * Const.CANVAS_SCALE);
-		area.graphics.endFill();
-		addChild(area);
-		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-		
-		isShooting = false;
-		lockedEntity = null;
+		spawnTimer = SPAWN_DELAY;
 	}
 	
-	function mouseDownHandler (e:MouseEvent) {
-		area.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-		area.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-		area.addEventListener(MouseEvent.MOUSE_OUT, mouseUpHandler);
-		isShooting = true;
-		shrimp.suck();
-	}
-	
-	function mouseUpHandler (e:MouseEvent) {
-		area.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
-		area.removeEventListener(MouseEvent.MOUSE_OUT, mouseUpHandler);
-		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
-		isShooting = false;
-		shrimp.suck(false);
-		
-		if (lockedEntity != null) {
-			var eAngle = Math.atan2(lockedEntity.y - shrimp.y, lockedEntity.x - shrimp.x);
-			var dist = Math.sqrt((lockedEntity.x-shrimp.x)*(lockedEntity.x-shrimp.x)+(lockedEntity.y-shrimp.y)*(lockedEntity.y-shrimp.y));
-			lockedEntity.setForce(eAngle, 5);
+	function clickHandler (ev:MouseEvent) {
+		if (lockedEntity == null && Std.is(ev.currentTarget, EntitySprite)) {
+			var e:Entity = cast(ev.currentTarget, EntitySprite).entity;
+			if (!e.lockable)	return;
+			e.dx = e.dy = 0;
+			lockedEntity = e;
+			// Shield
+			shield = new Shield();
+			shield.x = e.x;
+			shield.y = e.y;
+			addChild(shield.sprite);
+			entities.push(shield);
+		} else if (lockedEntity != null) {
+			var angle = Math.atan2(player.y - ev.stageY, player.x - ev.stageX);
+			lockedEntity.dx = Math.cos(angle) * -8;
+			lockedEntity.dy = Math.sin(angle) * -8;
 			lockedEntity = null;
+			if (shield != null)	shield.dead = true;
 		}
 	}
 	
 	override public function update () {
 		super.update();
-		// Ray
-		if (isShooting) {
-			showRay();
-			suckEntities();
+		
+		if (spawnTimer > 0) {
+			spawnTimer--;
+			if (spawnTimer == 0) {
+				spawnAsteroid();
+				spawnTimer = SPAWN_DELAY;
+			}
 		}
-		if (mouseX / Const.CANVAS_SCALE >= Const.CANVAS_WIDTH / 2)	shrimp.scaleX = 1;
-		else														shrimp.scaleX = -1;
+		
+		//AI
+		for (e in entities.filter(filterEnemies)) {
+			var ee = cast(e, Enemy);
+			if (ee.shootTimer == 0)	defend(ee);
+			if (ee.shootTimer == 0)	shoot(ee, player);
+		}
+		
+		// Collisions
+		for (i in 0...entities.length) {
+			for (j in i+1...entities.length) {
+				checkCollisions(entities[i], entities[j]);
+			}
+		}
+		
+		// LockedEntity
+		if (lockedEntity != null) {
+			var angle = Math.atan2(player.y - mouseY, player.x - mouseX);
+			lockedEntity.x = player.x + Math.cos(angle) * -(player.radius + lockedEntity.radius + 10);
+			lockedEntity.y = player.y + Math.sin(angle) * -(player.radius + lockedEntity.radius + 10);
+			if (shield != null) {
+				shield.x = lockedEntity.x;
+				shield.y = lockedEntity.y;
+			}
+		}
+		
 		// Update
 		for (e in entities) {
-			if (Std.is(e, Particle))	cast(e, Particle).setTarget(shrimp.x + (4 * shrimp.scaleX), shrimp.y + 8);
 			e.update();
 		}
 		// Filter dead
 		entities = entities.filter(filterDead);
-		// Render
-		render();
 	}
 	
-	function suckEntities () {
-		var heavy:Entity = null;
-		var minAngle:Float = 360;
-		var mAngle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x) * 180 / Math.PI;
+	function filterEnemies (e:Entity) :Bool {	return e.type == EEType.TEnemy; }
+	function filterBullets (e:Entity) :Bool {	return e.type == EEType.TBullet; }
+	function filterAsteroids (e:Entity) :Bool {	return e.type == EEType.TAsteroid; }
+	
+	function defend (e:Enemy) {
+		var shortestDist:Float = 9999;
+		var closest:Asteroid = null;
 		
-		for (e in entities) {
-			if (!e.suckable)	continue;
-			var eAngle = Math.atan2(e.y - shrimp.y, e.x - shrimp.x) * 180 / Math.PI;
-			var diff = Math.abs(mAngle - eAngle);
-			if (diff < 15) {
-				if (e.weight > 0) {
-					if ((lockedEntity == null || e == lockedEntity) && Math.abs(eAngle) < Math.abs(minAngle)) {
-						minAngle = eAngle;
-						heavy = e;
-					}
-				} else {
-					e.setForce(eAngle * Math.PI / 180);
-				}
+		for (f in entities.filter(filterAsteroids)) {
+			var distX = e.x - f.x;
+			var distY = e.y - f.y;
+			var dist = Math.sqrt(distX * distX + distY * distY);
+			var totalRad = e.dangerZone + f.radius;
+			if (dist < totalRad && dist < shortestDist) {
+				shortestDist = dist;
+				closest = cast(f);
 			}
 		}
 		
-		if (heavy != null) {
-			heavy.setForce(Math.atan2(heavy.y - shrimp.y, heavy.x - shrimp.x));
-			lockedEntity = heavy;
+		if (closest != null) {
+			shoot(e, closest);
+		}
+	}
+	
+	function shoot (from:Entity, towards:Entity) {
+		var angle = Math.atan2(from.y - towards.y, from.x - towards.x);
+		
+		var b = new Bullet();
+		b.x = from.x - Math.cos(angle) * (from.radius + b.radius + 2);
+		b.y = from.y - Math.sin(angle) * (from.radius + b.radius + 2);
+		b.dx = Math.cos(angle) * -b.speed;
+		b.dy = Math.sin(angle) * -b.speed;
+		addChild(b.sprite);
+		entities.push(b);
+		
+		if (from.type == EEType.TEnemy) {
+			cast(from, Enemy).shootTimer = Enemy.SHOOT_DELAY;
+		}
+	}
+	
+	function spawnAsteroid () {
+		var e = new Asteroid();
+		
+		var rx = Std.random(3);
+		var ry = Std.random(3);
+		if (rx == 2)	ry = Std.random(2);
+		
+		e.x = switch (rx) {
+			case 0:		-e.radius;
+			case 1:		900 + e.radius;
+			default:	Std.random(900);
+		}
+		e.y = switch (ry) {
+			case 0:		-e.radius;
+			case 1:		600 + e.radius;
+			default:	Std.random(600);
+		}
+		
+		var angle = Math.atan2(e.y - Std.random(600), e.x - Std.random(900));
+		e.dx = Math.cos(angle) * -e.speed;
+		e.dy = Math.sin(angle) * -e.speed;
+		
+		addChild(e.sprite);
+		e.sprite.addEventListener(MouseEvent.CLICK, clickHandler);
+		entities.push(e);
+	}
+	
+	function checkCollisions (e:Entity, f:Entity, first:Bool = false) {
+		var distX = e.x - f.x;
+		var distY = e.y - f.y;
+		var dist = Math.sqrt(distX * distX + distY * distY);
+		var totalRad = e.radius + f.radius;
+		if (dist < totalRad) {
+			//if (e == lockedEntity || f == lockedEntity || e == shield || f == shield)	trace(e.type + " vs " + f.type);
+			// Avoid overlap
+			if (first) {
+				var d = Math.ceil((totalRad - dist) / 2);
+				
+				var eAngle = Math.atan2(e.y - f.y, e.x - f.x);
+				e.x += Math.cos(eAngle) * d;
+				e.y += Math.sin(eAngle) * d;
+				
+				var fAngle = Math.atan2(f.y - e.y, f.x - e.x);
+				f.x += Math.cos(fAngle) * d;
+				f.y += Math.sin(fAngle) * d;
+				
+				return;
+			}
+			// If same type
+			if (e.type == EEType.TAsteroid && f.type == EEType.TAsteroid) {
+				var edx = (e.dx * (e.radius - f.radius) + (2 * f.radius * f.dx)) / totalRad;
+				var edy = (e.dy * (e.radius - f.radius) + (2 * f.radius * f.dy)) / totalRad;
+				var fdx = (f.dx * (f.radius - e.radius) + (2 * e.radius * e.dx)) / totalRad;
+				var fdy = (f.dy * (f.radius - e.radius) + (2 * e.radius * e.dy)) / totalRad;
+				
+				e.dx = edx;
+				e.dy = edy;
+				f.dx = fdx;
+				f.dy = fdy;
+				
+				e.x += e.dx;
+				e.y += e.dy;
+				f.x += f.dx;
+				f.y += f.dy;
+			}
+			else if (e.type == EEType.TPlayer && (f.type == EEType.TBullet || f.type == EEType.TAsteroid)) {
+				e.damage();
+				f.damage();
+			}
+			else if (f.type == EEType.TPlayer && (e.type == EEType.TBullet || e.type == EEType.TAsteroid)) {
+				f.damage();
+				e.damage();
+			}
+			else if (e.type == EEType.TEnemy && f.type == EEType.TAsteroid) {
+				e.damage();
+				f.damage();
+			}
+			else if (f.type == EEType.TEnemy && e.type == EEType.TAsteroid) {
+				e.damage();
+				f.damage();
+			}
+			else if (e.type == EEType.TBullet && f.type == EEType.TAsteroid ||
+					e.type == EEType.TAsteroid && f.type == EEType.TBullet ||
+					e.type == EEType.TBullet && f.type == EEType.TShield ||
+					e.type == EEType.TShield && f.type == EEType.TBullet) {
+				/*if (e != lockedEntity)	e.damage();
+				if (f != lockedEntity)	f.damage();*/
+				e.damage();
+				f.damage();
+			}
 		}
 	}
 	
 	function filterDead (e:Entity) :Bool {
-		return !e.dead;
-	}
-	
-	function showRay () {
-		/*var p = new Particle();
-		p.x = mouseX / Const.CANVAS_SCALE + Std.random(15) * (Std.random(2)*2-1);
-		p.y = mouseY / Const.CANVAS_SCALE + Std.random(15) * (Std.random(2)*2-1);
-		entities.add(p);*/
-		var angle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x);
-		var p = new Particle();
-		p.x = shrimp.x + Std.random(20) * (Std.random(2)*2-1) + Math.cos(angle) * 100;
-		p.y = shrimp.y + Std.random(20) * (Std.random(2)*2-1) + Math.sin(angle) * 100;
-		entities.add(p);
-	}
-	
-	public function render () {
-		canvasData.fillRect(canvasData.rect, 0xFF220022);
-		
-		for (e in entities) {
-			if (e.useCopyPixels()) {
-				if (e.tile != -1) {
-					SpriteSheet.ins.renderTile(e.tile, e.x + e.ox, e.y + e.oy, canvasData);
-				} else if (e.data != null) {
-					Const.TAP.x = e.x + e.ox;
-					Const.TAP.y = e.y + e.oy;
-					canvasData.copyPixels(e.data, e.data.rect, Const.TAP);
-				}
-			} else {
-				Const.TAM.identity();
-				// Rotation
-				if (e.rotation != 0)	Const.TAM.rotate(e.rotation * Math.PI / 180);
-				// Scale
-				if (e.scaleX != 1 || e.scaleY != 1)	Const.TAM.scale(e.scaleX, e.scaleY);
-				// Position
-				Const.TAM.translate(e.x + e.ox * e.scaleX, e.y + e.oy * e.scaleY);
-				// Render
-				if (e.tile != -1) {
-					canvasData.draw(SpriteSheet.ins.getTile(e.tile), Const.TAM);
-				} else {
-					canvasData.draw(e.data, Const.TAM);
-				}
+		var dead = e.dead || e.x < 0 - e.radius - 50 || e.x > 900 + e.radius + 50 || e.y < 0 - e.radius - 50 || e.y > 600 + e.radius + 50;
+		if (dead) {
+			if (e.sprite.parent != null)	e.sprite.parent.removeChild(e.sprite);
+			if (e.sprite.hasEventListener(MouseEvent.CLICK))	e.sprite.removeEventListener(MouseEvent.CLICK, clickHandler);
+			if (e == lockedEntity) {
+				lockedEntity = null;
+				shield.dead = true;
+			} else if (e == shield) {
+				shield = null;
 			}
 		}
+		return !dead;
 	}
 	
 	override public function kill () {
 		super.kill();
 		
-		canvasData.dispose();
-		canvasData = null;
-		
-		removeChild(canvas);
-		canvas = null;
-		
-		entities.clear();
+		while (entities.length > 0)	entities.shift();
 		entities = null;
 	}
 	

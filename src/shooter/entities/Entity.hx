@@ -1,7 +1,6 @@
 package shooter.entities;
 
-import flash.display.BitmapData;
-import haxe.Timer;
+import flash.display.Sprite;
 
 /**
  * ...
@@ -12,37 +11,49 @@ class Entity {
 	
 	public var x:Float;
 	public var y:Float;
-	public var rotation:Float;
-	public var scaleX:Float;
-	public var scaleY:Float;
-	public var w:Int;
-	public var h:Int;
-	
-	public var tile(default, null):Int;
-	public var ox(default, null):Float;
-	public var oy(default, null):Float;
-	public var data(default, null):BitmapData;
-	
 	public var dx:Float;
 	public var dy:Float;
 	public var friction:Float;
-	
+	public var radius:Int;
+	public var speed:Float;
 	public var dead:Bool;
-	public var suckable:Bool;
-	public var weight:Int;
+	public var lockable:Bool;
+	public var life:Int;
+	
+	public var type:EEType;
+	
+	public var sprite:EntitySprite;
+	var color:UInt;
 	
 	public function new () {
 		x = y = 0;
-		ox = oy = 0;
-		dx = dy = 0;
 		friction = 1;
-		rotation = 0;
-		scaleX = scaleY = 1;
-		tile = -1;
-		data = null;
+		radius = 20;
+		dx = dy = 0;
+		life = 1;
+		
+		type = EEType.TUnknown;
 		dead = false;
-		suckable = false;
-		weight = 0;
+		lockable = false;
+		
+		color = 0xFF00FF;
+		draw();
+	}
+	
+	public function draw () {
+		if (sprite == null) {
+			sprite = new EntitySprite(this);
+			sprite.mouseEnabled = false;
+		}
+		else sprite.graphics.clear();
+		sprite.graphics.beginFill(color);
+		sprite.graphics.drawCircle(0, 0, radius);
+		sprite.graphics.endFill();
+	}
+	
+	public function damage (d:Int = 1) {
+		life -= d;
+		if (life <= 0)	dead = true;
 	}
 	
 	public function update () {
@@ -52,16 +63,30 @@ class Entity {
 		if (Math.abs(dy) < 0.01)	dy = 0;
 		x += dx;
 		y += dy;
-	}
-	
-	public function setForce (a:Float, f:Float = -0.7) {
-		dx = Math.cos(a) * f;
-		dy = Math.sin(a) * f;
-	}
-	
-	public function useCopyPixels () :Bool {
-		return (rotation == 0 && scaleX == 1 && scaleY == 1);
+		
+		sprite.x = x;
+		sprite.y = y;
 	}
 	
 }
 
+class EntitySprite extends Sprite {
+	
+	public var entity:Entity;
+	
+	public function new (e:Entity) {
+		super();
+		
+		entity = e;
+	}
+	
+}
+
+enum EEType {
+	TAsteroid;
+	TPlayer;
+	TEnemy;
+	TBullet;
+	TShield;
+	TUnknown;
+}

@@ -32,8 +32,9 @@ class SpriteSheet {
 		// Shrimp 0-6
 		for (i in 0...7)	rects.set(i, new Rectangle(0, i*32, 32, 32));
 		// Asteroid 7-10
-		for (i in 0...4)	rects.set(i+7, new Rectangle(32, i*32, 32, 32));
-		
+		for (i in 0...4)	rects.set(i + 7, new Rectangle(32, i * 32, 32, 32));
+		//
+		rects.set(11, new Rectangle(64, 0, 14, 14));
 		
 		tiles = new Map();
 		

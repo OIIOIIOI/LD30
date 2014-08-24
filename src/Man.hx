@@ -26,13 +26,13 @@ class Man {
 	public function changeScreen (e:EScreen) {
 		// Kill current screen
 		if (curScr != null) {
-			trace("KILL " + curEScr);
+			//trace("KILL " + curEScr);
 			if (Lib.current.stage.contains(curScr))	Lib.current.stage.removeChild(curScr);
 			curScr.kill();
 			curScr = null;
 		}
 		// Set up new screen
-		trace("CREATE " + e);
+		//trace("CREATE " + e);
 		curScr = switch (e) {
 			case EScreen.MENU:			new MenuScreen();
 			case EScreen.SHOOTER:		new Shooter();

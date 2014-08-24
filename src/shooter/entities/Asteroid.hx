@@ -1,35 +1,36 @@
 package shooter.entities;
 
-import flash.display.BitmapData;
-import shooter.entities.AnimEntity.Anim;
+import flash.Lib;
+import shooter.entities.Entity;
 
 /**
  * ...
  * @author 01101101
  */
 
-class Asteroid extends AnimEntity {
-	
-	static public var ANIM_IDLE:String = "anim_idle";
+class Asteroid extends Entity {
 	
 	public function new () {
 		super();
 		
-		anims = new Map();
+		type = EEType.TAsteroid;
+		lockable = true;
 		
-		var a = new Anim();
-		a.addFrame(10, -16, -16);
-		anims.set(ANIM_IDLE, a);
+		radius = 30;
+		speed = Std.random(10) / 10;
+		var angle = Std.random(360) * Math.PI / 180;
+		dx = Math.cos(angle) * speed;
+		dy = Math.sin(angle) * speed;
 		
-		w = h = 32;
-		ox = oy = -8;
-		friction = 0.97;
+		color = 0x808080;
+		draw();
 		
-		suckable = true;
-		weight = 1;
-		
-		curAnim = ANIM_IDLE;
-		anims.get(curAnim).reset();
+		sprite.buttonMode = true;
+		sprite.mouseEnabled = true;
+	}
+	
+	override public function update ()  {
+		super.update();
 	}
 	
 }
