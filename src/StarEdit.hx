@@ -11,12 +11,14 @@ class StarEdit extends Sprite {
 	
 	public var size:Int;
 	public var type:StarType;
+	public var constIndex:Int;
 	
 	public function new () {
 		super();
 		
 		type = StarType.REGULAR;
 		size = Std.random(5) + 1;
+		constIndex = -1;
 		
 		draw();
 	}
@@ -45,9 +47,14 @@ class StarEdit extends Sprite {
 			case StarType.START:	0xFF0000;
 		}
 		graphics.clear();
+		if (constIndex != -1)	graphics.lineStyle(5, 0xFFCC00);
 		graphics.beginFill(color);
 		graphics.drawCircle(0, 0, 5 + size * 3);
 		graphics.endFill();
+	}
+	
+	override public function toString () {
+		return x + "," + y + "," + size + "," + type + "," + constIndex;
 	}
 	
 }
