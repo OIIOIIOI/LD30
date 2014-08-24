@@ -1,5 +1,7 @@
 package ;
 
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
@@ -10,6 +12,7 @@ import flash.text.TextField;
 import flash.text.TextFieldType;
 import flash.text.TextFormat;
 import flash.ui.Keyboard;
+import haxe.Resource;
 import StarEdit;
 
 /**
@@ -17,7 +20,15 @@ import StarEdit;
  * @author 01101101
  */
 
+@:bitmap("assets/shark.png") class SharkBG extends BitmapData {}
+@:bitmap("assets/gayboat.png") class BoatBG extends BitmapData {}
+@:bitmap("assets/drunk_clam.png") class ClamBG extends BitmapData {}
+
 class Editor extends Sprite {
+	
+	var bmp:Bitmap;
+	var bds:Array<BitmapData>;
+	var bdIndex:Int;
 	
 	var bg:Sprite;
 	var constPath:Sprite;
@@ -31,8 +42,17 @@ class Editor extends Sprite {
 	public function new () {
 		super();
 		
+		bds = new Array();
+		bds.push(new SharkBG(900, 610));
+		bds.push(new BoatBG(900, 610));
+		bds.push(new ClamBG(900, 610));
+		bdIndex = -1;
+		
 		stars = new Array();
 		const = new Array();
+		
+		bmp = new Bitmap();
+		addChild(bmp);
 		
 		constPath = new Sprite();
 		addChild(constPath);
@@ -41,7 +61,7 @@ class Editor extends Sprite {
 		addChild(paths);
 		
 		bg = new Sprite();
-		bg.graphics.beginFill(0xFF00FF, 0.1);
+		bg.graphics.beginFill(0xFF00FF, 0);
 		bg.graphics.drawRect(0, 0, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight);
 		bg.graphics.endFill();
 		addChild(bg);
@@ -74,11 +94,22 @@ class Editor extends Sprite {
 				else				parseTF();
 			case Keyboard.DELETE:
 				reset();
+			case Keyboard.TAB:
+				bdIndex++;
+				if (bdIndex == bds.length) {
+					bmp.bitmapData = null;
+				} else if (bdIndex > bds.length) {
+					bdIndex = 0;
+					bmp.bitmapData = bds[bdIndex];
+				} else {
+					bmp.bitmapData = bds[bdIndex];
+				}
 		}
 	}
 	
 	function update (e:Event) {
 		drawPaths();
+		drawConst();
 	}
 	
 	function drawPaths () {
@@ -90,7 +121,7 @@ class Editor extends Sprite {
 			for (j in i+1...stars.length) {
 				var nb = stars[j];
 				var dist = Math.sqrt((na.x-nb.x)*(na.x-nb.x)+(na.y-nb.y)*(na.y-nb.y));
-				if (dist <= 100) {
+				if (dist <= 150) {
 					paths.graphics.moveTo(na.x, na.y);
 					paths.graphics.lineTo(nb.x, nb.y);
 				}
