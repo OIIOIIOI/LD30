@@ -1,6 +1,7 @@
 package screen;
 
 import screen.Screen;
+import Man;
 
 /**
  * ...
@@ -8,15 +9,19 @@ import screen.Screen;
  */
 
 class MenuScreen extends Screen {
+	var testBtn :MenuBtn;
 	
 	public function new () {
 		super();
-		
-		trace("menu");
+		testBtn = new MenuBtn(Test, btnAction);
+		addChild(testBtn);
 	}
-	
 	override public function kill ()  {
 		super.kill();
+		testBtn.kill();
+	}
+	function btnAction() {
+		Man.ins.changeScreen(EScreen.SHOOTER);
 	}
 	
 }
