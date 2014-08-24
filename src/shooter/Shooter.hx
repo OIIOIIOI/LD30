@@ -10,6 +10,7 @@ import flash.filters.BlurFilter;
 import flash.ui.Keyboard;
 import screen.Screen;
 import shooter.entities.AnimEntity;
+import shooter.entities.Asteroid;
 import shooter.entities.Entity;
 import shooter.entities.Particle;
 import shooter.entities.StarShrimp;
@@ -30,6 +31,7 @@ class Shooter extends Screen {
 	var area:Sprite;
 	
 	var isShooting:Bool;
+	var lockedEntity:Entity;
 	
 	public function new () {
 		super();
@@ -45,14 +47,26 @@ class Shooter extends Screen {
 		addChild(canvas);
 		
 		shrimp = new StarShrimp();
-		shrimp.x = Std.random(110);
-		shrimp.y = Std.random(75);
+		shrimp.x = Const.CANVAS_WIDTH / 2;
+		shrimp.y = Const.CANVAS_HEIGHT / 2;
 		entities.add(shrimp);
 		
-		var p = new Particle();
-		p.x = Std.random(40);
-		p.y = Std.random(40);
-		entities.add(p);
+		var a = new Asteroid();
+		a.x = Std.random(Const.CANVAS_WIDTH);
+		a.y = Std.random(Const.CANVAS_HEIGHT);
+		entities.add(a);
+		a = new Asteroid();
+		a.x = Std.random(Const.CANVAS_WIDTH);
+		a.y = Std.random(Const.CANVAS_HEIGHT);
+		entities.add(a);
+		a = new Asteroid();
+		a.x = Std.random(Const.CANVAS_WIDTH);
+		a.y = Std.random(Const.CANVAS_HEIGHT);
+		entities.add(a);
+		a = new Asteroid();
+		a.x = Std.random(Const.CANVAS_WIDTH);
+		a.y = Std.random(Const.CANVAS_HEIGHT);
+		entities.add(a);
 		
 		area = new Sprite();
 		area.graphics.beginFill(0xFF00FF, 0);
@@ -62,6 +76,7 @@ class Shooter extends Screen {
 		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		
 		isShooting = false;
+		lockedEntity = null;
 	}
 	
 	function mouseDownHandler (e:MouseEvent) {
@@ -69,6 +84,7 @@ class Shooter extends Screen {
 		area.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 		area.addEventListener(MouseEvent.MOUSE_OUT, mouseUpHandler);
 		isShooting = true;
+		shrimp.suck();
 	}
 	
 	function mouseUpHandler (e:MouseEvent) {
@@ -76,27 +92,77 @@ class Shooter extends Screen {
 		area.removeEventListener(MouseEvent.MOUSE_OUT, mouseUpHandler);
 		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		isShooting = false;
+		shrimp.suck(false);
+		
+		if (lockedEntity != null) {
+			var eAngle = Math.atan2(lockedEntity.y - shrimp.y, lockedEntity.x - shrimp.x);
+			var dist = Math.sqrt((lockedEntity.x-shrimp.x)*(lockedEntity.x-shrimp.x)+(lockedEntity.y-shrimp.y)*(lockedEntity.y-shrimp.y));
+			lockedEntity.setForce(eAngle, 5);
+			lockedEntity = null;
+		}
 	}
 	
 	override public function update () {
 		super.update();
 		// Ray
-		if (isShooting)	showRay();
+		if (isShooting) {
+			showRay();
+			suckEntities();
+		}
+		if (mouseX / Const.CANVAS_SCALE >= Const.CANVAS_WIDTH / 2)	shrimp.scaleX = 1;
+		else														shrimp.scaleX = -1;
 		// Update
 		for (e in entities) {
+			if (Std.is(e, Particle))	cast(e, Particle).setTarget(shrimp.x + (4 * shrimp.scaleX), shrimp.y + 8);
 			e.update();
 		}
-		
+		// Filter dead
+		entities = entities.filter(filterDead);
 		// Render
 		render();
 	}
 	
+	function suckEntities () {
+		var heavy:Entity = null;
+		var minAngle:Float = 360;
+		var mAngle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x) * 180 / Math.PI;
+		
+		for (e in entities) {
+			if (!e.suckable)	continue;
+			var eAngle = Math.atan2(e.y - shrimp.y, e.x - shrimp.x) * 180 / Math.PI;
+			var diff = Math.abs(mAngle - eAngle);
+			if (diff < 15) {
+				if (e.weight > 0) {
+					if ((lockedEntity == null || e == lockedEntity) && Math.abs(eAngle) < Math.abs(minAngle)) {
+						minAngle = eAngle;
+						heavy = e;
+					}
+				} else {
+					e.setForce(eAngle * Math.PI / 180);
+				}
+			}
+		}
+		
+		if (heavy != null) {
+			heavy.setForce(Math.atan2(heavy.y - shrimp.y, heavy.x - shrimp.x));
+			lockedEntity = heavy;
+		}
+	}
+	
+	function filterDead (e:Entity) :Bool {
+		return !e.dead;
+	}
+	
 	function showRay () {
+		/*var p = new Particle();
+		p.x = mouseX / Const.CANVAS_SCALE + Std.random(15) * (Std.random(2)*2-1);
+		p.y = mouseY / Const.CANVAS_SCALE + Std.random(15) * (Std.random(2)*2-1);
+		entities.add(p);*/
 		var angle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x);
-		//var p = new Particle();
-		//p.x = Std.random(100);
-		//p.y = Std.random(100);
-		//entities.add(p);
+		var p = new Particle();
+		p.x = shrimp.x + Std.random(20) * (Std.random(2)*2-1) + Math.cos(angle) * 100;
+		p.y = shrimp.y + Std.random(20) * (Std.random(2)*2-1) + Math.sin(angle) * 100;
+		entities.add(p);
 	}
 	
 	public function render () {
@@ -115,10 +181,10 @@ class Shooter extends Screen {
 				Const.TAM.identity();
 				// Rotation
 				if (e.rotation != 0)	Const.TAM.rotate(e.rotation * Math.PI / 180);
-				// Position
-				Const.TAM.translate(e.x + e.ox, e.y + e.oy);
 				// Scale
 				if (e.scaleX != 1 || e.scaleY != 1)	Const.TAM.scale(e.scaleX, e.scaleY);
+				// Position
+				Const.TAM.translate(e.x + e.ox * e.scaleX, e.y + e.oy * e.scaleY);
 				// Render
 				if (e.tile != -1) {
 					canvasData.draw(SpriteSheet.ins.getTile(e.tile), Const.TAM);
@@ -127,18 +193,7 @@ class Shooter extends Screen {
 				}
 			}
 		}
-		
-		//renderRay();
 	}
-	
-	/*function renderRay () {
-		var angle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x);
-		
-		Const.TAM.identity();
-		Const.TAM.rotate(angle);
-		Const.TAM.translate(shrimp.x + 4, shrimp.y + 6);
-		canvasData.draw(ray, Const.TAM);
-	}*/
 	
 	override public function kill () {
 		super.kill();

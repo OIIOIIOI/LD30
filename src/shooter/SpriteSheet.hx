@@ -29,11 +29,11 @@ class SpriteSheet {
 		data = new Sheet(256, 256);
 		
 		rects = new Map();
-		// Shrimp
-		rects.set(0, new Rectangle(0, 0, 32, 32));
-		rects.set(1, new Rectangle(0, 32, 32, 32));
-		rects.set(2, new Rectangle(0, 64, 32, 32));
-		rects.set(3, new Rectangle(0, 96, 32, 32));
+		// Shrimp 0-6
+		for (i in 0...7)	rects.set(i, new Rectangle(0, i*32, 32, 32));
+		// Asteroid 7-10
+		for (i in 0...4)	rects.set(i+7, new Rectangle(32, i*32, 32, 32));
+		
 		
 		tiles = new Map();
 		

@@ -21,7 +21,7 @@ class Main {
 		
 		new Man();
 		
-		Man.ins.changeScreen(EScreen.MENU);
+		Man.ins.changeScreen(EScreen.SHOOTER);
 		
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, update);
 	}

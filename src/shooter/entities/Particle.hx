@@ -1,6 +1,7 @@
 package shooter.entities;
 
 import flash.display.BitmapData;
+import flash.geom.Point;
 
 /**
  * ...
@@ -9,17 +10,31 @@ import flash.display.BitmapData;
 
 class Particle extends Entity {
 	
+	var target:Point;
+	
 	public function new () {
 		super();
 		
-		data = new BitmapData(1, 1, true, 0x80FFFFFF);
+		var col = (Std.random(0xCC) << 24) | 0xFFFFFF;
+		data = new BitmapData(1, 1, true, col);
+		
+		target = new Point();
+	}
+	
+	public function setTarget (x:Float, y:Float) {
+		target.x = x;
+		target.y = y;
 	}
 	
 	override public function update ()  {
 		super.update();
 		
-		//e.x += (e.x - x) * 0.5;
-		//e.y += (e.y - y) * 0.5;
+		x += (target.x - x) * 0.1;
+		y += (target.y - y) * 0.1;
+		
+		if (Math.abs(target.x - x) < 1 && Math.abs(target.y - y) < 1) {
+			dead = true;
+		}
 	}
 	
 }

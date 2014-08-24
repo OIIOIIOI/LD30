@@ -1,6 +1,7 @@
 package shooter.entities;
 
 import flash.display.BitmapData;
+import haxe.Timer;
 
 /**
  * ...
@@ -22,17 +23,40 @@ class Entity {
 	public var oy(default, null):Float;
 	public var data(default, null):BitmapData;
 	
+	public var dx:Float;
+	public var dy:Float;
+	public var friction:Float;
+	
+	public var dead:Bool;
+	public var suckable:Bool;
+	public var weight:Int;
+	
 	public function new () {
 		x = y = 0;
 		ox = oy = 0;
+		dx = dy = 0;
+		friction = 1;
 		rotation = 0;
 		scaleX = scaleY = 1;
 		tile = -1;
 		data = null;
+		dead = false;
+		suckable = false;
+		weight = 0;
 	}
 	
 	public function update () {
-		
+		dx *= friction;
+		if (Math.abs(dx) < 0.01)	dx = 0;
+		dy *= friction;
+		if (Math.abs(dy) < 0.01)	dy = 0;
+		x += dx;
+		y += dy;
+	}
+	
+	public function setForce (a:Float, f:Float = -0.7) {
+		dx = Math.cos(a) * f;
+		dy = Math.sin(a) * f;
 	}
 	
 	public function useCopyPixels () :Bool {
@@ -40,3 +64,4 @@ class Entity {
 	}
 	
 }
+
