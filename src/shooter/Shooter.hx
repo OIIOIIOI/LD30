@@ -10,6 +10,7 @@ import flash.filters.BlurFilter;
 import flash.ui.Keyboard;
 import shooter.entities.AnimEntity;
 import shooter.entities.Entity;
+import shooter.entities.Particle;
 import shooter.entities.StarShrimp;
 
 /**
@@ -27,7 +28,7 @@ class Shooter extends Sprite {
 	
 	var area:Sprite;
 	
-	//var 
+	var isShooting:Bool;
 	
 	public function new () {
 		super();
@@ -54,23 +55,42 @@ class Shooter extends Sprite {
 		addChild(area);
 		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		
+		isShooting = false;
+		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
 	
 	function mouseDownHandler (e:MouseEvent) {
-		trace("down");
+		area.removeEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+		area.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+		area.addEventListener(MouseEvent.MOUSE_OUT, mouseUpHandler);
+		isShooting = true;
+	}
+	
+	function mouseUpHandler (e:MouseEvent) {
+		area.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
+		area.removeEventListener(MouseEvent.MOUSE_OUT, mouseUpHandler);
+		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+		isShooting = false;
 	}
 	
 	public function update (ev:Event) {
-		
-		// Update and render
+		// Ray
+		if (isShooting)	showRay();
+		// Update
 		for (e in entities) {
 			e.update();
 		}
-		
-		//ray.rotation = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x) * 180 / Math.PI;
-		
+		// Render
 		render();
+	}
+	
+	function showRay () {
+		var angle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x);
+		var p = new Particle();
+		p.x = Std.random(100);
+		p.y = Std.random(100);
+		entities.add(p);
 	}
 	
 	public function render () {
