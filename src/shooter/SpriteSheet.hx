@@ -32,6 +32,7 @@ class SpriteSheet {
 		rects.set(1, new Rectangle(0, 32, 32, 32));
 		rects.set(2, new Rectangle(0, 64, 32, 32));
 		rects.set(3, new Rectangle(0, 96, 32, 32));
+		rects.set(4, new Rectangle(32, 0, 108, 50));
 		
 		tiles = new Map();
 		tiles.set(-1, new BitmapData(16, 16, true, 0x80FFFF00));// Filler

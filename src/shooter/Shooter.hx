@@ -2,9 +2,11 @@ package shooter;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.filters.BlurFilter;
 import flash.ui.Keyboard;
 import shooter.entities.AnimEntity;
 import shooter.entities.Entity;
@@ -21,6 +23,12 @@ class Shooter extends Sprite {
 	var canvas:Bitmap;
 	var canvasData:BitmapData;
 	
+	var shrimp:StarShrimp;
+	
+	var area:Sprite;
+	
+	//var 
+	
 	public function new () {
 		super();
 		
@@ -34,25 +42,34 @@ class Shooter extends Sprite {
 		canvas.scaleX = canvas.scaleY = Const.CANVAS_SCALE;
 		addChild(canvas);
 		
-		var e = new StarShrimp();
-		e.x = Std.random(110);
-		e.y = Std.random(75);
-		entities.add(e);
+		shrimp = new StarShrimp();
+		shrimp.x = Std.random(110);
+		shrimp.y = Std.random(75);
+		entities.add(shrimp);
 		
-		canvas.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
+		area = new Sprite();
+		area.graphics.beginFill(0xFF00FF, 0);
+		area.graphics.drawRect(0, 0, Const.CANVAS_WIDTH * Const.CANVAS_SCALE, Const.CANVAS_HEIGHT * Const.CANVAS_SCALE);
+		area.graphics.endFill();
+		addChild(area);
+		area.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		
 		addEventListener(Event.ENTER_FRAME, update);
 	}
 	
 	function mouseDownHandler (e:MouseEvent) {
-		
+		trace("down");
 	}
 	
 	public function update (ev:Event) {
+		
 		// Update and render
 		for (e in entities) {
 			e.update();
 		}
+		
+		//ray.rotation = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x) * 180 / Math.PI;
+		
 		render();
 	}
 	
@@ -70,13 +87,33 @@ class Shooter extends Sprite {
 			}
 			else {
 				Const.TAM.identity();
-				Const.TAM.translate(e.x, e.y);
+				// Rotation
 				if (e.rotation != 0)				Const.TAM.rotate(e.rotation * Math.PI / 180);
+				// Position
+				if (Std.is(e, AnimEntity)) {
+					var ae:AnimEntity = cast(e);
+					Const.TAM.translate(ae.x + ae.ox, ae.y + ae.oy);
+				} else {
+					Const.TAM.translate(e.x, e.y);
+				}
+				// Scale
 				if (e.scaleX != 1 || e.scaleY != 1)	Const.TAM.scale(e.scaleX, e.scaleY);
+				// Render
 				canvasData.draw(SpriteSheet.ins.getTile(e.getTile()), Const.TAM);
 			}
 		}
+		
+		//renderRay();
 	}
+	
+	/*function renderRay () {
+		var angle = Math.atan2(mouseY / Const.CANVAS_SCALE - shrimp.y, mouseX / Const.CANVAS_SCALE - shrimp.x);
+		
+		Const.TAM.identity();
+		Const.TAM.rotate(angle);
+		Const.TAM.translate(shrimp.x + 4, shrimp.y + 6);
+		canvasData.draw(ray, Const.TAM);
+	}*/
 	
 	public function kill () {
 		canvasData.dispose();
