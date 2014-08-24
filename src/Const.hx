@@ -11,6 +11,10 @@ import flash.geom.Rectangle;
 
 class Const {
 	
+	static public var CANVAS_WIDTH:Int = 225;
+	static public var CANVAS_HEIGHT:Int = 150;
+	static public var CANVAS_SCALE:Int = 4;
+	
 	static public var TAP:Point = new Point();
 	static public var TAR:Rectangle = new Rectangle();
 	static public var TAM:Matrix = new Matrix();
