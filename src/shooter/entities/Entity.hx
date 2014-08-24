@@ -17,21 +17,22 @@ class Entity {
 	public var w:Int;
 	public var h:Int;
 	
-	var tile:Int;
+	public var tile(default, null):Int;
+	public var ox(default, null):Float;
+	public var oy(default, null):Float;
+	public var data(default, null):BitmapData;
 	
 	public function new () {
 		x = y = 0;
+		ox = oy = 0;
 		rotation = 0;
 		scaleX = scaleY = 1;
 		tile = -1;
+		data = null;
 	}
 	
 	public function update () {
 		
-	}
-	
-	public function getTile () :Int {
-		return tile;
 	}
 	
 	public function useCopyPixels () :Bool {

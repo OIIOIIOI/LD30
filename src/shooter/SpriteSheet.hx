@@ -20,6 +20,8 @@ class SpriteSheet {
 	var rects:Map<Int, Rectangle>;
 	var tiles:Map<Int, BitmapData>;
 	
+	var filler:BitmapData;
+	
 	public function new () {
 		if (ins != null)	throw new Error("SpriteSheet already created");
 		ins = this;
@@ -32,20 +34,22 @@ class SpriteSheet {
 		rects.set(1, new Rectangle(0, 32, 32, 32));
 		rects.set(2, new Rectangle(0, 64, 32, 32));
 		rects.set(3, new Rectangle(0, 96, 32, 32));
-		rects.set(4, new Rectangle(32, 0, 108, 50));
 		
 		tiles = new Map();
-		tiles.set(-1, new BitmapData(16, 16, true, 0x80FFFF00));// Filler
+		
+		filler = new BitmapData(16, 16, true, 0x80FFFF00);// Filler
 	}
 	
 	public function renderTile (t:Int, x:Float, y:Float, canvas:BitmapData) {
 		if (!rects.exists(t)) {
-			trace("Can't render unregistered tile");
-			return;
+			Const.TAP.x = x;
+			Const.TAP.y = y;
+			canvas.copyPixels(filler, filler.rect, Const.TAP);
+		} else {
+			Const.TAP.x = x;
+			Const.TAP.y = y;
+			canvas.copyPixels(data, rects.get(t), Const.TAP);
 		}
-		Const.TAP.x = x;
-		Const.TAP.y = y;
-		canvas.copyPixels(data, rects.get(t), Const.TAP);
 	}
 	
 	public function getTile (t:Int) :BitmapData {
@@ -61,8 +65,8 @@ class SpriteSheet {
 				tiles.set(t, bd);
 				return bd;
 			}
-			// Return filler data
-			else return getTile(-1);
+			// Return null
+			else return filler;
 		}
 		// If tile data is already stored, simply return it
 		else return tiles.get(t);

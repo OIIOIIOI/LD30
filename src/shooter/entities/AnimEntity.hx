@@ -10,33 +10,21 @@ class AnimEntity extends Entity {
 	var anims:Map<String, Anim>;
 	var curAnim:String;
 	
-	public var ox(get, null):Float;
-	public var oy(get, null):Float;
-	
 	public function new () {
 		super();
 	}
 	
 	override public function update () {
 		// Update anim
-		if (anims != null && curAnim != null)	anims.get(curAnim).update();
+		if (anims != null && curAnim != null) {
+			anims.get(curAnim).update();
+			
+			tile = anims.get(curAnim).tile;
+			ox = anims.get(curAnim).ox;
+			oy = anims.get(curAnim).oy;
+		}
 		
 		super.update();
-	}
-	
-	override public function getTile () :Int {
-		if (anims != null && curAnim != null)	return anims.get(curAnim).tile;
-		else									return -1;
-	}
-	
-	function get_ox () :Float {
-		if (anims != null && curAnim != null)	return anims.get(curAnim).ox;
-		else									return 0;
-	}
-	
-	function get_oy () :Float {
-		if (anims != null && curAnim != null)	return anims.get(curAnim).oy;
-		else									return 0;
 	}
 	
 }
