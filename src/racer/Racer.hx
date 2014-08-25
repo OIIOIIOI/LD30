@@ -47,6 +47,8 @@ class Racer extends Screen {
 	var raceComplete:Bool;
 	var cockpit:Cockpit;
 	
+	var shakeTimer:Int;
+	
 	var showCol:Bool;
 	
 	var tick:Int;
@@ -61,6 +63,7 @@ class Racer extends Screen {
 		showCol = false;
 		
 		tick = 0;
+		shakeTimer = 0;
 		
 		entities = new Array();
 		particles = new Array();
@@ -99,8 +102,6 @@ class Racer extends Screen {
 		addChild(container);
 		
 		cockpit = new Cockpit();
-		cockpit.x = Const.STAGE_WIDTH - cockpit.sprite.width / 2;
-		cockpit.y = Const.STAGE_HEIGHT - cockpit.sprite.height / 2;
 		addChild(cockpit.sprite);
 		entities.push(cockpit);
 		
@@ -251,7 +252,8 @@ class Racer extends Screen {
 		// Update
 		for (e in entities) {
 			e.update();
-			if (e.bubbling && tick % 10 == 0) bubbleParticle(e);
+			if ((e.bubbling && tick % 10 == 0) ||
+				(Std.is(e, Player) && cast(e, Player).dashTimer > 120)) bubbleParticle(e);
 			if (Std.is(e, Lobster))	cast(e, Lobster).goForEntity(player);
 		}
 		for (e in particles) {
@@ -273,6 +275,10 @@ class Racer extends Screen {
 		
 		// Camera
 		moveCamera();
+		if (shakeTimer > 0) {
+			shakeTimer--;
+			cameraShake();
+		}
 	}
 	
 	function filterDead (e:Entity) :Bool {
@@ -313,7 +319,10 @@ class Racer extends Screen {
 			
 			if (Std.is(e, Shark))	cast(e, Shark).refreshTarget();
 			if (Std.is(f, Shark))	cast(f, Shark).refreshTarget();
-			if (Std.is(e, Player) || Std.is(f, Player))	cockpit.hurt();
+			if (Std.is(e, Player) || Std.is(f, Player)) {
+				cockpit.hurt();
+				shakeTimer = 15;
+			}
 		}
 	}
 	
@@ -322,8 +331,17 @@ class Racer extends Screen {
 		var ty = -player.y * Const.SCALE + canvas.height / 2;
 		container.x += (tx - container.x) * 0.1;
 		container.y += (ty - container.y) * 0.1;
-		container.x = Math.max(Math.min(container.x, 0), -(container.width - Const.STAGE_WIDTH));
-		container.y = Math.max(Math.min(container.y, 0), -(container.height - Const.STAGE_HEIGHT));
+		container.x = Math.max(Math.min(container.x, 0), -(Const.STAGE_WIDTH * container.scaleX - Const.STAGE_WIDTH));
+		container.y = Math.max(Math.min(container.y, 0), -(Const.STAGE_HEIGHT * container.scaleY - Const.STAGE_HEIGHT));
+	}
+	
+	function cameraShake () {
+		var sx = (Std.random(2) * 2 - 1) * 5;
+		var sy = (Std.random(2) * 2 - 1) * 5;
+		container.x += sx;
+		container.y += sy;
+		cockpit.x += sx;
+		cockpit.y += sy;
 	}
 	
 	function starParticles (s:Entity) {
