@@ -17,6 +17,9 @@ class Entity {
 	public var radius:Int;
 	public var dead:Bool;
 	public var constrained:Bool;
+	public var collided:Bool;
+	
+	var wasConstrained:Bool;
 	
 	public var sprite:Sprite;
 	
@@ -28,9 +31,12 @@ class Entity {
 		radius = 0;
 		dead = false;
 		constrained = true;
+		collided = false;
 	}
 	
 	public function update () {
+		wasConstrained = false;
+		
 		dx *= friction;
 		if (Math.abs(dx) < 0.01)	dx = 0;
 		dy *= friction;
@@ -43,17 +49,21 @@ class Entity {
 			if (x < radius) {
 				x = radius;
 				dx = -dx;
+				wasConstrained = true;
 			} else if (x > Const.STAGE_WIDTH - radius) {
 				x = Const.STAGE_WIDTH - radius;
 				dx = -dx;
+				wasConstrained = true;
 			}
 			// Constrain y
 			if (y < radius) {
 				y = radius;
 				dy = -dy;
+				wasConstrained = true;
 			} else if (y > Const.STAGE_HEIGHT - radius) {
 				y = Const.STAGE_HEIGHT - radius;
 				dy = -dy;
+				wasConstrained = true;
 			}
 		}
 		

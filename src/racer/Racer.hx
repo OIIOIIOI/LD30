@@ -12,19 +12,22 @@ import screen.Screen;
  * @author 01101101
  */
 
-@:bitmap("assets/img/space_01.png") class SpaceBG extends BitmapData { }
-@:bitmap("assets/img/c_beluga.png") class Beluga extends BitmapData { }
-@:bitmap("assets/img/c_boat.png") class Boat extends BitmapData { }
-@:bitmap("assets/img/c_clam.png") class Clam extends BitmapData { }
-@:bitmap("assets/img/c_eel.png") class Eel extends BitmapData { }
-@:bitmap("assets/img/c_jellyfish.png") class Jellyfish extends BitmapData { }
-@:bitmap("assets/img/c_otter.png") class Otter extends BitmapData { }
-@:bitmap("assets/img/c_rusty.png") class Rusty extends BitmapData { }
-@:bitmap("assets/img/c_seagull.png") class Seagull extends BitmapData { }
-@:bitmap("assets/img/c_shark.png") class Shark extends BitmapData { }
-@:bitmap("assets/img/c_spliff.png") class Spliff extends BitmapData { }
-@:bitmap("assets/img/c_squid.png") class Squid extends BitmapData { }
-@:bitmap("assets/img/c_walrus.png") class Walrus extends BitmapData { }
+@:bitmap("assets/img/space_01.png")		class Space1BG extends BitmapData { }
+@:bitmap("assets/img/space_02.png")		class Space2BG extends BitmapData { }
+@:bitmap("assets/img/space_03.png")		class Space3BG extends BitmapData { }
+
+@:bitmap("assets/img/c_beluga.png")		class CBeluga extends BitmapData { }
+@:bitmap("assets/img/c_boat.png")		class CBoat extends BitmapData { }
+@:bitmap("assets/img/c_clam.png")		class CClam extends BitmapData { }
+@:bitmap("assets/img/c_eel.png")		class CEel extends BitmapData { }
+@:bitmap("assets/img/c_jellyfish.png")	class CJellyfish extends BitmapData { }
+@:bitmap("assets/img/c_otter.png")		class COtter extends BitmapData { }
+@:bitmap("assets/img/c_rusty.png")		class CRusty extends BitmapData { }
+@:bitmap("assets/img/c_seagull.png")	class CSeagull extends BitmapData { }
+@:bitmap("assets/img/c_shark.png")		class CShark extends BitmapData { }
+@:bitmap("assets/img/c_spliff.png")		class CSpliff extends BitmapData { }
+@:bitmap("assets/img/c_squid.png")		class CSquid extends BitmapData { }
+@:bitmap("assets/img/c_walrus.png")		class CWalrus extends BitmapData { }
 
 class Racer extends Screen {
 	
@@ -32,7 +35,7 @@ class Racer extends Screen {
 	var container:Sprite;
 	var canvas:Bitmap;
 	var overlay:Bitmap;
-	var player:Entity;
+	var player:Player;
 	var next:Next;
 	var checkpoints:Array<Checkpoint>;
 	var targetCP:Int;
@@ -46,7 +49,11 @@ class Racer extends Screen {
 		
 		container = new Sprite();
 		
-		canvas = new Bitmap(new SpaceBG(900, 610));
+		canvas = switch (Std.random(3)) {
+			case 0:		new Bitmap(new Space1BG(900, 610));
+			case 1:		new Bitmap(new Space2BG(900, 610));
+			default:	new Bitmap(new Space3BG(900, 610));
+		}
 		container.addChild(canvas);
 		
 		overlay = new Bitmap();
@@ -70,28 +77,22 @@ class Racer extends Screen {
 		
 		container.scaleX = container.scaleY = Const.SCALE;
 		addChild(container);
-		
-		container.addEventListener(MouseEvent.CLICK, clickHandler);
-	}
-	
-	function clickHandler (e:MouseEvent) {
-		trace(e.stageX + ", " + e.stageY);
 	}
 	
 	public function initMap (l:ELevel) {
 		overlay.bitmapData = switch (l) {
-			case ELevel.LBeluga:	new Beluga(900, 610);
-			case ELevel.LBoat:		new Boat(900, 610);
-			case ELevel.LClam:		new Clam(900, 610);
-			case ELevel.LEel:		new Eel(900, 610);
-			case ELevel.LJellyfish:	new Jellyfish(900, 610);
-			case ELevel.LOtter:		new Otter(900, 610);
-			case ELevel.LRusty:		new Rusty(900, 610);
-			case ELevel.LSeagull:	new Seagull(900, 610);
-			case ELevel.LShark:		new Shark(900, 610);
-			case ELevel.LSpliff:	new Spliff(900, 610);
-			case ELevel.LSquid:		new Squid(900, 610);
-			case ELevel.LWalrus:	new Walrus(900, 610);
+			case ELevel.LBeluga:	new CBeluga(900, 610);
+			case ELevel.LBoat:		new CBoat(900, 610);
+			case ELevel.LClam:		new CClam(900, 610);
+			case ELevel.LEel:		new CEel(900, 610);
+			case ELevel.LJellyfish:	new CJellyfish(900, 610);
+			case ELevel.LOtter:		new COtter(900, 610);
+			case ELevel.LRusty:		new CRusty(900, 610);
+			case ELevel.LSeagull:	new CSeagull(900, 610);
+			case ELevel.LShark:		new CShark(900, 610);
+			case ELevel.LSpliff:	new CSpliff(900, 610);
+			case ELevel.LSquid:		new CSquid(900, 610);
+			case ELevel.LWalrus:	new CWalrus(900, 610);
 		}
 		
 		var s = switch (l) {
@@ -123,6 +124,25 @@ class Racer extends Screen {
 		}
 		targetCP = 0;
 		raceComplete = false;
+		
+		var a:Entity;
+		a = new Asteroid();
+		a.x = Std.random(Const.STAGE_WIDTH);
+		a.y = Std.random(Const.STAGE_HEIGHT);
+		container.addChild(a.sprite);
+		entities.push(a);
+		
+		a = new Shark();
+		a.x = Std.random(Const.STAGE_WIDTH);
+		a.y = Std.random(Const.STAGE_HEIGHT);
+		container.addChild(a.sprite);
+		entities.push(a);
+		
+		a = new Lobster();
+		a.x = Std.random(Const.STAGE_WIDTH);
+		a.y = Std.random(Const.STAGE_HEIGHT);
+		container.addChild(a.sprite);
+		entities.push(a);
 	}
 	
 	override public function update () {
@@ -136,6 +156,7 @@ class Racer extends Screen {
 			if (KeyboardManager.isDown(Keyboard.DOWN))	dy += player.speed;
 			if (KeyboardManager.isDown(Keyboard.LEFT))	dx -= player.speed;
 			if (KeyboardManager.isDown(Keyboard.RIGHT))	dx += player.speed;
+			if (KeyboardManager.isDown(Keyboard.SPACE))	player.dash();
 			player.dx += dx;
 			player.dy += dy;
 			
@@ -175,11 +196,24 @@ class Racer extends Screen {
 				overlay.alpha += 0.005;
 			}
 		}
+		
 		// Update
 		for (e in entities) {
 			e.update();
+			if (Std.is(e, Lobster))	cast(e, Lobster).goForEntity(player);
 		}
+		
+		// Collisions
+		var collEntities = entities.filter(filterCollided);
+		for (i in 0...collEntities.length) {
+			for (j in i+1...collEntities.length) {
+				checkCollisions(collEntities[i], collEntities[j]);
+			}
+		}
+		
+		// Filter dead
 		entities = entities.filter(filterDead);
+		
 		// Camera
 		moveCamera();
 	}
@@ -191,6 +225,36 @@ class Racer extends Screen {
 				e.sprite.parent.removeChild(e.sprite);
 		}
 		return !dead;
+	}
+	
+	function filterCollided (e:Entity) :Bool {
+		return e.collided;
+	}
+	
+	function checkCollisions (e:Entity, f:Entity) {
+		var distX = e.x - f.x;
+		var distY = e.y - f.y;
+		var dist = Math.sqrt(distX * distX + distY * distY);
+		var totalRad = e.radius + f.radius;
+		if (dist < totalRad) {
+			var edx = (e.dx * (e.radius - f.radius) + (2 * f.radius * f.dx)) / totalRad;
+			var edy = (e.dy * (e.radius - f.radius) + (2 * f.radius * f.dy)) / totalRad;
+			var fdx = (f.dx * (f.radius - e.radius) + (2 * e.radius * e.dx)) / totalRad;
+			var fdy = (f.dy * (f.radius - e.radius) + (2 * e.radius * e.dy)) / totalRad;
+			
+			e.dx = edx;
+			e.dy = edy;
+			f.dx = fdx;
+			f.dy = fdy;
+			
+			e.x += e.dx;
+			e.y += e.dy;
+			f.x += f.dx;
+			f.y += f.dy;
+			
+			if (Std.is(e, Shark))	cast(e, Shark).refreshTarget();
+			if (Std.is(f, Shark))	cast(f, Shark).refreshTarget();
+		}
 	}
 	
 	function moveCamera () {
