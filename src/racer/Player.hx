@@ -1,5 +1,6 @@
 package racer;
 
+import flash.display.Bitmap;
 import flash.display.Sprite;
 
 /**
@@ -18,15 +19,18 @@ class Player extends Entity {
 		
 		speed = 0.15;
 		friction = 0.96;
-		radius = 20;
+		radius = 25;
 		collided = true;
 		
 		dashTimer = 0;
 		
-		sprite = new Sprite();
-		sprite.graphics.beginFill(0xFFFFFF);
-		sprite.graphics.drawCircle(0, 0, radius);
-		sprite.graphics.endFill();
+		sprite = new Bitmap(SpriteSheet.ins.getTile("shrimp0"));
+		sprite.scaleX = sprite.scaleY = 2;
+		
+		colSprite = new Sprite();
+		colSprite.graphics.beginFill(0xFFFFFF);
+		colSprite.graphics.drawCircle(0, 0, radius);
+		colSprite.graphics.endFill();
 	}
 	
 	override public function update () {
@@ -37,8 +41,8 @@ class Player extends Entity {
 	
 	public function dash () {
 		if (dashTimer > 0)	return;
-		dx *= 3;
-		dy *= 3;
+		dx *= 4;
+		dy *= 4;
 		dashTimer = DASH_DELAY;
 	}
 	

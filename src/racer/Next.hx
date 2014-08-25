@@ -1,4 +1,5 @@
 package racer;
+import flash.display.Bitmap;
 import flash.display.Sprite;
 
 /**
@@ -13,10 +14,13 @@ class Next extends Entity {
 		radius = 20;
 		constrained = false;
 		
-		sprite = new Sprite();
-		sprite.graphics.beginFill(0xFFFF00, 0.3);
-		sprite.graphics.drawCircle(0, 0, radius);
-		sprite.graphics.endFill();
+		sprite = new Bitmap(SpriteSheet.ins.getTile("next0"));
+		sprite.scaleX = sprite.scaleY = 2;
+		
+		colSprite = new Sprite();
+		colSprite.graphics.beginFill(0xFFFF00, 0.3);
+		colSprite.graphics.drawCircle(0, 0, radius);
+		colSprite.graphics.endFill();
 	}
 	
 }

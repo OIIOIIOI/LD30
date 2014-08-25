@@ -1,5 +1,6 @@
 package racer;
 
+import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.geom.Point;
 
@@ -23,7 +24,8 @@ class Shark extends Entity {
 		
 		speed = 2;
 		friction = 1;
-		radius = 20;
+		radius = 30;
+		offset.x = 7;
 		collided = true;
 		
 		angle = Std.random(360) * Math.PI / 180;
@@ -32,10 +34,13 @@ class Shark extends Entity {
 		target = new Point(Math.cos(angle) * T_OFFSET, Math.sin(angle) * T_OFFSET);
 		subAngle = Std.random(360);
 		
-		sprite = new Sprite();
-		sprite.graphics.beginFill(0x0000FF);
-		sprite.graphics.drawCircle(0, 0, radius);
-		sprite.graphics.endFill();
+		sprite = new Bitmap(SpriteSheet.ins.getTile("shark0"));
+		sprite.scaleX = sprite.scaleY = 2;
+		
+		colSprite = new Sprite();
+		colSprite.graphics.beginFill(0x0000FF);
+		colSprite.graphics.drawCircle(0, 0, radius);
+		colSprite.graphics.endFill();
 	}
 	
 	public function refreshTarget () {

@@ -1,4 +1,5 @@
 package racer;
+import flash.display.Bitmap;
 import flash.display.Sprite;
 
 /**
@@ -15,15 +16,19 @@ class Lobster extends Entity {
 		
 		speed = 10;
 		friction = 0.95;
-		radius = 20;
+		radius = 30;
+		offset.x = 7;
 		collided = true;
 		
 		sightRadius = 150;
 		
-		sprite = new Sprite();
-		sprite.graphics.beginFill(0x9900FF);
-		sprite.graphics.drawCircle(0, 0, radius);
-		sprite.graphics.endFill();
+		sprite = new Bitmap(SpriteSheet.ins.getTile("lobster0"));
+		sprite.scaleX = sprite.scaleY = 2;
+		
+		colSprite = new Sprite();
+		colSprite.graphics.beginFill(0x9900FF);
+		colSprite.graphics.drawCircle(0, 0, radius);
+		colSprite.graphics.endFill();
 	}
 	
 	public function goForEntity (e:Entity) {

@@ -1,5 +1,7 @@
 package racer;
+import flash.display.Bitmap;
 import flash.display.Sprite;
+import flash.geom.Point;
 
 /**
  * ...
@@ -15,13 +17,16 @@ class Entity {
 	public var speed:Float;
 	public var friction:Float;
 	public var radius:Int;
+	var scale:Int;
+	var offset:Point;
 	public var dead:Bool;
 	public var constrained:Bool;
 	public var collided:Bool;
 	
 	var wasConstrained:Bool;
 	
-	public var sprite:Sprite;
+	public var sprite:Bitmap;
+	public var colSprite:Sprite;
 	
 	public function new () {
 		x = y = 0;
@@ -29,6 +34,8 @@ class Entity {
 		speed = 0;
 		friction = 1;
 		radius = 0;
+		scale = 2;
+		offset = new Point();
 		dead = false;
 		constrained = true;
 		collided = false;
@@ -68,9 +75,25 @@ class Entity {
 		}
 		
 		if (sprite != null) {
-			sprite.x = x;
-			sprite.y = y;
+			var dir = sprite.scaleX / scale;
+			if (dx < 0)			dir = -1;
+			else if (dx > 0) 	dir = 1;
+			sprite.scaleX = dir * scale;
+			sprite.x = x - (sprite.width / 2 + offset.x) * dir;
+			sprite.y = y - sprite.height / 2 + offset.y;
+		}
+		if (colSprite != null) {
+			colSprite.alpha = 0.5;
+			colSprite.x = x;
+			colSprite.y = y;
 		}
 	}
 	
+}
+
+enum EEntityType {
+	CHECKPOINT;
+	ASTEROID;
+	SHARK;
+	LOBSTER;
 }

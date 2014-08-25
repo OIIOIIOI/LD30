@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
+import racer.Entity.EEntityType;
 import screen.Screen;
 
 /**
@@ -42,8 +43,14 @@ class Racer extends Screen {
 	var paths:Sprite;
 	var raceComplete:Bool;
 	
+	var showCol:Bool;
+	
 	public function new () {
 		super();
+		
+		new SpriteSheet();
+		
+		showCol = false;
 		
 		entities = new Array();
 		
@@ -63,16 +70,18 @@ class Racer extends Screen {
 		paths = new Sprite();
 		container.addChild(paths);
 		
-		initMap(ELevel.LSeagull);
+		initMap(ELevel.LBeluga);
 		
 		next = new Next();
 		container.addChild(next.sprite);
+		if (showCol)	container.addChild(next.colSprite);
 		entities.push(next);
 		
 		player = new Player();
 		player.x = checkpoints[targetCP].x;
 		player.y = checkpoints[targetCP].y;
 		container.addChild(player.sprite);
+		if (showCol)	container.addChild(player.colSprite);
 		entities.push(player);
 		
 		container.scaleX = container.scaleY = Const.SCALE;
@@ -96,7 +105,7 @@ class Racer extends Screen {
 		}
 		
 		var s = switch (l) {
-			case ELevel.LBeluga:	"114,493;321,473;230,432;275,365;422,348;514,334;641,395;581,286;683,231;645,119;457,162;270,303";
+			case ELevel.LBeluga:	"114,493,CHECKPOINT,1;321,473,CHECKPOINT,0;230,432,CHECKPOINT,2;275,365,CHECKPOINT,3;422,348,CHECKPOINT,11;514,334,CHECKPOINT,10;641,395,CHECKPOINT,9;581,286,CHECKPOINT,8;683,231,CHECKPOINT,7;645,119,CHECKPOINT,6;457,162,CHECKPOINT,5;270,303,CHECKPOINT,4;547,200,ASTEROID,-1";
 			case ELevel.LBoat:		"299,230;335,333;431,158;416,291;569,212;714,203;604,441;310,467;210,439;182,361;164,268;381,102;336,60;171,218;222,103;132,212";
 			case ELevel.LClam:		"343,266;200,173;187,112;395,190;572,122;715,134;740,251;602,286;467,302;375,343;276,394;382,433;580,405;683,343;611,451;645,399;697,425";
 			case ELevel.LEel:		"226,178;364,192;432,297;562,328;690,319;703,229;547,158;282,87;132,185;146,324;260,447;513,487;638,444;598,411;641,382";
@@ -109,21 +118,42 @@ class Racer extends Screen {
 			case ELevel.LSquid:		"597,132;747,48;735,136;694,144;551,285;513,370;427,419;306,373;314,286;371,233;546,156;532,123;254,169;193,332;260,413;208,530;296,457;307,525;421,558;537,453;679,377;744,410";
 			case ELevel.LWalrus:	"225,330;304,229;432,227;476,98;594,38;684,128;618,179;597,380;505,413;377,498;414,399;212,369;141,492;142,401;80,379";
 		}
+		
 		var a = s.split(";");
 		
 		checkpoints = new Array();
-		var cp:Checkpoint;
+		
 		for (i in 0...a.length) {
 			var b = a[i].split(",");
-			cp = new Checkpoint(i);
-			cp.x = Std.parseInt(b[0]);
-			cp.y = Std.parseInt(b[1]);
-			checkpoints.push(cp);
-			container.addChild(cp.sprite);
-			entities.push(cp);
+			
+			if (b.length != 4)	continue;
+			
+			var e = switch (EEntityType.createByName(b[2])) {
+				case EEntityType.CHECKPOINT:	new Checkpoint(Std.parseInt(b[3]));
+				case EEntityType.ASTEROID:		new Asteroid();
+				case EEntityType.SHARK:			new Shark();
+				case EEntityType.LOBSTER:		new Lobster();
+			}
+			e.x = Std.parseInt(b[0]);
+			e.y = Std.parseInt(b[1]);
+			
+			if (Std.is(e, Checkpoint))	checkpoints.push(cast(e));
+			
+			container.addChild(e.sprite);
+			if (showCol)	container.addChild(e.colSprite);
+			entities.push(e);
 		}
+		
+		checkpoints.sort(sortCP);
+		
 		targetCP = 0;
 		raceComplete = false;
+	}
+	
+	function sortCP (a:Checkpoint, b:Checkpoint) :Int {
+		if (a.order > b.order)		return 1;
+		else if (a.order < b.order)	return -1;
+		else						return 0;
 	}
 	
 	override public function update () {
@@ -202,8 +232,10 @@ class Racer extends Screen {
 	function filterDead (e:Entity) :Bool {
 		var dead = e.dead;
 		if (dead) {
-			if (e.sprite != null && e.sprite.parent != null)
+			if (e.sprite != null && e.sprite.parent != null) {
 				e.sprite.parent.removeChild(e.sprite);
+				if (showCol)	e.colSprite.parent.removeChild(e.colSprite);
+			}
 		}
 		return !dead;
 	}
