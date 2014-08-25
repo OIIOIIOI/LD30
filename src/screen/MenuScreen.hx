@@ -27,6 +27,8 @@ import Man;
 @:bitmap("assets/img/c_smallBtn/c_otter.png") class C_otterBitmap extends BitmapData { }
 @:bitmap("assets/img/c_smallBtn/c_eel.png") class C_eelBitmap extends BitmapData { }
 
+@:bitmap("assets/img/c_smallBtn/c_unknown.png") class C_unknownBitmap extends BitmapData { }
+
 @:bitmap("assets/img/ship_2.png") class ShipBmp extends BitmapData { }
 
 @:font("assets/font/Audiowide-Regular.ttf") class AudioWideFont extends Font { }
@@ -36,7 +38,8 @@ class MenuScreen extends Screen {
 	var testBtn :MenuBtn;
 	var lvlSnpSht = new Bitmap();
 	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_otterBitmap(275,186),new C_walrusBitmap(275,186),new C_rustyBitmap(275,186),new C_boatBitmap(275,186),new C_seagullBitmap(275,186),new C_eelBitmap(275,186),new C_clamBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_jellyfishBitmap(275,186),new C_squidBitmap(275,186)];
-	var snpShtLabel: Array<String> = ["Bebop Beluga","One-eyed Otter","Toothless Walrus","Rusty Tuna Can","Rainbow Tanker","Seven Seagull","Golden Eel","Drunken Clam","Neurasthenic Shark","Sea Weed Spliff","Jealous Jellyfish","Kinky Squid"];
+	var snpShtLabel: Array<String> = ["Bebop Beluga", "One-eyed Otter", "Toothless Walrus", "Rusty Tuna Can", "Rainbow Tanker", "Seven Seagull", "Golden Eel", "Drunken Clam", "Neurasthenic Shark", "Sea Weed Spliff", "Jealous Jellyfish", "Kinky Squid"];
+	public var discovered :Array<Bool> = [false,false,false,false,false,false,false,false,false,false,false,false];
 	var snpShtIndex : Int;
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
@@ -66,7 +69,11 @@ class MenuScreen extends Screen {
 		var ssTxtFmt = new TextFormat(audioWideFont.fontName, 25, 0xFFFFFF);
 		ssTxtFmt.align = TextFormatAlign.CENTER;
 		constellName.defaultTextFormat = ssTxtFmt;
-		constellName.text = snpShtLabel[0];
+		if(discovered[0]){
+			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
+		}else {
+			lvlSnpSht.bitmapData = new C_unknownBitmap(275,186);
+		}
 		addChild(constellName);
 		//---------------------------------
 		var openPod = new Bitmap();
@@ -115,8 +122,12 @@ class MenuScreen extends Screen {
 		if (snpShtIndex < 0) {
 			snpShtIndex = 0;
 		}else{
-			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			constellName.text = snpShtLabel[snpShtIndex];
+			if(discovered[snpShtIndex]){
+				lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
+			}else {
+				lvlSnpSht.bitmapData = new C_unknownBitmap(275,186);
+			}
 		}
 	}
 	function rightSnpShtChange() {
@@ -124,8 +135,12 @@ class MenuScreen extends Screen {
 		if (snpShtIndex > snpShtBmps.length-1) {
 			snpShtIndex = snpShtBmps.length-1;
 		}else{
-			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			constellName.text = snpShtLabel[snpShtIndex];
+			if(discovered[snpShtIndex]){
+				lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
+			}else {
+				lvlSnpSht.bitmapData = new C_unknownBitmap(275,186);
+			}
 		}
 	}
 }

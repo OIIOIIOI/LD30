@@ -11,6 +11,8 @@ import Man;
  * @author 01101101
  */
 
+@:font("assets/font/Audiowide-Regular.ttf") class AudioWideFont extends Font { }
+
 class Main {
 	
 	static function main () {
@@ -24,7 +26,7 @@ class Main {
 		KeyboardManager.init(Lib.current.stage);
 		new Man();
 		
-		Man.ins.changeScreen(EScreen.MENU);
+		Man.ins.changeScreen(EScreen.TITLE);
 		
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, update);
 	}

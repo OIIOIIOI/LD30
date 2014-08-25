@@ -4,6 +4,7 @@ import flash.Lib;
 import racer.Racer;
 import screen.MenuScreen;
 import screen.Screen;
+import screen.TitleScreen;
 import shooter.Shooter;
 
 /**
@@ -35,6 +36,7 @@ class Man {
 		// Set up new screen
 		//trace("CREATE " + e);
 		curScr = switch (e) {
+			case EScreen.TITLE:				new TitleScreen();
 			case EScreen.MENU:				new MenuScreen();
 			case EScreen.RACER_BELUGA:		new Racer(ELevel.LBeluga);
 			case EScreen.RACER_BOAT:		new Racer(ELevel.LBoat);
@@ -62,6 +64,7 @@ class Man {
 }
 
 enum EScreen {
+	TITLE;
 	MENU;
 	RACER_BELUGA;
 	RACER_BOAT;
