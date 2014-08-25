@@ -38,9 +38,12 @@ class MenuScreen extends Screen {
 	var lftBtn :MenuBtn;
 	var rghtBtn :MenuBtn;
 	var lvlSnpSht = new Bitmap();
+	var prevSnpSht = new Bitmap();
+	var nextSnpSht = new Bitmap();
+	var nextSnpSht2 = new Bitmap();
 	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_otterBitmap(275,186),new C_walrusBitmap(275,186),new C_rustyBitmap(275,186),new C_boatBitmap(275,186),new C_seagullBitmap(275,186),new C_eelBitmap(275,186),new C_clamBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_jellyfishBitmap(275,186),new C_squidBitmap(275,186)];
 	var snpShtLabel: Array<String> = ["Bebop Beluga", "One-eyed Otter", "Toothless Walrus", "Rusty Tuna Can", "Rainbow Tanker", "Seven Seagull", "Golden Eel", "Drunken Clam", "Neurasthenic Shark", "Sea Weed Spliff", "Jealous Jellyfish", "Kinky Squid"];
-	public var discovered :Array<Bool> = [false,false,false,false,false,false,false,false,false,false,false,false];
+	public var discovered :Array<Bool> = [true,true,true,true,true,true,true,true,true,true,true,true];//[false,false,false,false,false,false,false,false,false,false,false,false];
 	var snpShtIndex : Int;
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
@@ -70,6 +73,36 @@ class MenuScreen extends Screen {
 		lvlSnpSht.x = 172;
 		lvlSnpSht.y = 180;
 		this.addChild(lvlSnpSht);
+		//-----------------------------
+		prevSnpSht.y = 210;
+		prevSnpSht.scaleX = 0.8;
+		prevSnpSht.scaleY = 0.8;
+		prevSnpSht.alpha = 0.2;
+		this.addChild(prevSnpSht);
+		//-----------------------------
+		if (discovered[1]) {
+			nextSnpSht.bitmapData = snpShtBmps[1];
+		}else {
+			nextSnpSht.bitmapData =  new C_unknownBitmap(275,186);
+		}
+		nextSnpSht.x = 410;
+		nextSnpSht.y = 210;
+		nextSnpSht.scaleX = 0.8;
+		nextSnpSht.scaleY = 0.8;
+		nextSnpSht.alpha = 0.2;
+		this.addChild(nextSnpSht);
+		//-----------------------------
+		if (discovered[2]) {
+			nextSnpSht2.bitmapData = snpShtBmps[2];
+		}else {
+			nextSnpSht2.bitmapData =  new C_unknownBitmap(275,186);
+		}
+		nextSnpSht2.x = 650;
+		nextSnpSht2.y = 210;
+		nextSnpSht2.scaleX = 0.8;
+		nextSnpSht2.scaleY = 0.8;
+		nextSnpSht2.alpha = 0.2;
+		this.addChild(nextSnpSht2);
 		//-----------------------------
 		constellName = new TextField();
 		constellName.embedFonts = true;
@@ -101,7 +134,7 @@ class MenuScreen extends Screen {
 		//---------------------------------
 		var openPod = new Bitmap();
 		openPod.bitmapData = new ShipBmp(446,522);
-		openPod.x = 430;
+		openPod.x = 450;
 		openPod.y = 120;
 		openPod.scaleX = 0.8;
 		openPod.scaleY = 0.8;
@@ -148,8 +181,14 @@ class MenuScreen extends Screen {
 			constellName.text = snpShtLabel[snpShtIndex];
 			lvlCounter.text = "Constellation "+(snpShtIndex + 1) + "/12";
 			if(discovered[snpShtIndex]){
+				updatePrev();
+				updateNext();
+				updateNext2();
 				lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			}else {
+				updatePrev();
+				updateNext();
+				updateNext2();
 				lvlSnpSht.bitmapData = new C_unknownBitmap(275,186);
 			}
 		}
@@ -162,9 +201,48 @@ class MenuScreen extends Screen {
 			constellName.text = snpShtLabel[snpShtIndex];
 			lvlCounter.text = "Constellation "+(snpShtIndex + 1) + "/12";
 			if(discovered[snpShtIndex]){
+				updatePrev();
+				updateNext();
+				updateNext2();
 				lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			}else {
-				lvlSnpSht.bitmapData = new C_unknownBitmap(275,186);
+				updatePrev();
+				updateNext();
+				updateNext2();
+				lvlSnpSht.bitmapData = new C_unknownBitmap(275, 186);
+			}
+		}
+	}
+	function updateNext () {
+		if (discovered[snpShtIndex + 1]) {
+			nextSnpSht.bitmapData = snpShtBmps[snpShtIndex + 1];
+		}else {
+			if (snpShtIndex + 1 > 0 && snpShtIndex + 1 < 11) {
+				nextSnpSht.bitmapData = new C_unknownBitmap(275,186);
+			}else {
+				nextSnpSht.bitmapData = null;
+			}
+		}
+	}
+	function updateNext2 () {
+		if (discovered[snpShtIndex + 2]) {
+			nextSnpSht2.bitmapData = snpShtBmps[snpShtIndex + 2];
+		}else {
+			if (snpShtIndex + 2 > 0 && snpShtIndex + 2 < 11) {
+				nextSnpSht2.bitmapData = new C_unknownBitmap(275,186);
+			}else {
+				nextSnpSht2.bitmapData = null;
+			}
+		}
+	}
+	function updatePrev () {
+		if (discovered[snpShtIndex - 1]) {
+			prevSnpSht.bitmapData = snpShtBmps[snpShtIndex - 1];
+		}else {
+			if (snpShtIndex - 1 > 0 && snpShtIndex - 1 < 11) {
+				prevSnpSht.bitmapData = new C_unknownBitmap(275,186);
+			}else {
+				prevSnpSht.bitmapData = null;
 			}
 		}
 	}
