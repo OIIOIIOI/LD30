@@ -2,6 +2,7 @@ package screen;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.text.Font;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;

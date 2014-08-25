@@ -4,6 +4,7 @@ import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.Lib;
+import flash.text.Font;
 import Man;
 
 /**
