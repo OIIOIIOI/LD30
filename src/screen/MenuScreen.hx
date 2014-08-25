@@ -35,7 +35,8 @@ import Man;
 
 class MenuScreen extends Screen {
 	var startBtn :MenuBtn;
-	var testBtn :MenuBtn;
+	var lftBtn :MenuBtn;
+	var rghtBtn :MenuBtn;
 	var lvlSnpSht = new Bitmap();
 	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_otterBitmap(275,186),new C_walrusBitmap(275,186),new C_rustyBitmap(275,186),new C_boatBitmap(275,186),new C_seagullBitmap(275,186),new C_eelBitmap(275,186),new C_clamBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_jellyfishBitmap(275,186),new C_squidBitmap(275,186)];
 	var snpShtLabel: Array<String> = ["Bebop Beluga", "One-eyed Otter", "Toothless Walrus", "Rusty Tuna Can", "Rainbow Tanker", "Seven Seagull", "Golden Eel", "Drunken Clam", "Neurasthenic Shark", "Sea Weed Spliff", "Jealous Jellyfish", "Kinky Squid"];
@@ -43,6 +44,7 @@ class MenuScreen extends Screen {
 	var snpShtIndex : Int;
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
+	var lvlCounter :TextField;
 	
 	public function new () {
 		super();
@@ -53,6 +55,16 @@ class MenuScreen extends Screen {
 		startBtn.x = 140;
 		startBtn.y = 400;
 		addChild(startBtn);
+		//--------------------------
+		lftBtn = new MenuBtn(Left, leftSnpShtChange);
+		lftBtn.x = 140;
+		lftBtn.y = 490;
+		addChild(lftBtn);
+		//--------------------------
+		rghtBtn = new MenuBtn(Right, rightSnpShtChange);
+		rghtBtn.x = 390;
+		rghtBtn.y = 490;
+		addChild(rghtBtn);
 		//--------------------------
 		lvlSnpSht.bitmapData = snpShtBmps[0];
 		lvlSnpSht.x = 172;
@@ -75,6 +87,17 @@ class MenuScreen extends Screen {
 			lvlSnpSht.bitmapData = new C_unknownBitmap(275,186);
 		}
 		addChild(constellName);
+		//-------------------------------
+		lvlCounter = new TextField();
+		lvlCounter.embedFonts = true;
+		lvlCounter.width =  400;
+		lvlCounter.x = 90;
+		lvlCounter.y = 500;
+		var lcTxtFmt = new TextFormat(audioWideFont.fontName, 15, 0xFFFFFF);
+		lcTxtFmt.align = TextFormatAlign.CENTER;
+		lvlCounter.defaultTextFormat = lcTxtFmt;
+		lvlCounter.text = "Constellation "+(snpShtIndex + 1) + "/12";
+		addChild(lvlCounter);
 		//---------------------------------
 		var openPod = new Bitmap();
 		openPod.bitmapData = new ShipBmp(446,522);
@@ -123,6 +146,7 @@ class MenuScreen extends Screen {
 			snpShtIndex = 0;
 		}else{
 			constellName.text = snpShtLabel[snpShtIndex];
+			lvlCounter.text = "Constellation "+(snpShtIndex + 1) + "/12";
 			if(discovered[snpShtIndex]){
 				lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			}else {
@@ -136,6 +160,7 @@ class MenuScreen extends Screen {
 			snpShtIndex = snpShtBmps.length-1;
 		}else{
 			constellName.text = snpShtLabel[snpShtIndex];
+			lvlCounter.text = "Constellation "+(snpShtIndex + 1) + "/12";
 			if(discovered[snpShtIndex]){
 				lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			}else {
