@@ -121,8 +121,8 @@ class MenuScreen extends Screen {
 	}
 	function rightSnpShtChange() {
 		snpShtIndex ++;
-		if (snpShtIndex > 9) {
-			snpShtIndex = 9;
+		if (snpShtIndex > 11) {
+			snpShtIndex = 11;
 		}else{
 			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 			constellName.text = snpShtLabel[snpShtIndex];
