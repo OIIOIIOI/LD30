@@ -1,4 +1,5 @@
 package racer;
+
 import flash.display.Bitmap;
 import flash.display.Sprite;
 
@@ -10,21 +11,27 @@ import flash.display.Sprite;
 class Checkpoint extends Entity {
 	
 	public var order(default, null):Int;
+	var version:Int;
 	
 	public function new (o:Int) {
 		super();
 		
 		order = o;
+		version = Std.random(8);
 		
-		radius = 20;
+		radius = 10*scale;
 		
-		sprite = new Bitmap(SpriteSheet.ins.getTile("star" + Std.random(8)));
-		sprite.scaleX = sprite.scaleY = 2;
+		sprite = new Bitmap(SpriteSheet.ins.getTile("starOff"));
+		sprite.scaleX = sprite.scaleY = scale;
 		
 		colSprite = new Sprite();
 		colSprite.graphics.beginFill(0x999999);
 		colSprite.graphics.drawCircle(0, 0, radius);
 		colSprite.graphics.endFill();
+	}
+	
+	public function turnOn () {
+		sprite.bitmapData = SpriteSheet.ins.getTile("star"+version+"on");
 	}
 	
 	public function toString () {

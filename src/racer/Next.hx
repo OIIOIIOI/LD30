@@ -15,7 +15,7 @@ class Next extends Entity {
 		constrained = false;
 		
 		sprite = new Bitmap(SpriteSheet.ins.getTile("next0"));
-		sprite.scaleX = sprite.scaleY = 2;
+		sprite.scaleX = sprite.scaleY = scale;
 		
 		colSprite = new Sprite();
 		colSprite.graphics.beginFill(0xFFFF00, 0.3);

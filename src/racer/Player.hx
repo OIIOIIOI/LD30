@@ -19,13 +19,16 @@ class Player extends Entity {
 		
 		speed = 0.15;
 		friction = 0.96;
-		radius = 25;
+		radius = 13*scale;
 		collided = true;
+		bubbling = true;
 		
 		dashTimer = 0;
 		
 		sprite = new Bitmap(SpriteSheet.ins.getTile("shrimp0"));
-		sprite.scaleX = sprite.scaleY = 2;
+		sprite.scaleX = sprite.scaleY = scale;
+		
+		animDelay = 15;
 		
 		colSprite = new Sprite();
 		colSprite.graphics.beginFill(0xFFFFFF);
@@ -44,6 +47,12 @@ class Player extends Entity {
 		dx *= 4;
 		dy *= 4;
 		dashTimer = DASH_DELAY;
+	}
+	
+	override function nextFrame ()  {
+		animIndex++;
+		sprite.bitmapData = SpriteSheet.ins.getTile("shrimp" + ((animIndex % 2) + 0));
+		animDelay = 15;
 	}
 	
 }

@@ -16,14 +16,17 @@ class Lobster extends Entity {
 		
 		speed = 10;
 		friction = 0.95;
-		radius = 30;
-		offset.x = 7;
+		radius = 15*scale;
+		offset.x = 3*scale;
 		collided = true;
+		bubbling = true;
 		
 		sightRadius = 150;
 		
 		sprite = new Bitmap(SpriteSheet.ins.getTile("lobster0"));
-		sprite.scaleX = sprite.scaleY = 2;
+		sprite.scaleX = sprite.scaleY = scale;
+		
+		animDelay = 15;
 		
 		colSprite = new Sprite();
 		colSprite.graphics.beginFill(0x9900FF);
@@ -42,6 +45,12 @@ class Lobster extends Entity {
 			dx = Math.cos(a) * speed;
 			dy = Math.sin(a) * speed;
 		}
+	}
+	
+	override function nextFrame ()  {
+		animIndex++;
+		sprite.bitmapData = SpriteSheet.ins.getTile("lobster" + (animIndex % 2));
+		animDelay = 15;
 	}
 	
 }

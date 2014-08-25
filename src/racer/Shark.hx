@@ -17,16 +17,17 @@ class Shark extends Entity {
 	
 	var angle:Float;
 	var subAngle:Float;
-	var target:Point;
+	public var target:Point;
 	
 	public function new () {
 		super();
 		
 		speed = 2;
 		friction = 1;
-		radius = 30;
-		offset.x = 7;
+		radius = 15*scale;
+		offset.x = 3*scale;
 		collided = true;
+		bubbling = true;
 		
 		angle = Std.random(360) * Math.PI / 180;
 		dx = Math.cos(angle) * speed;
@@ -35,7 +36,9 @@ class Shark extends Entity {
 		subAngle = Std.random(360);
 		
 		sprite = new Bitmap(SpriteSheet.ins.getTile("shark0"));
-		sprite.scaleX = sprite.scaleY = 2;
+		sprite.scaleX = sprite.scaleY = scale;
+		
+		animDelay = 15;
 		
 		colSprite = new Sprite();
 		colSprite.graphics.beginFill(0x0000FF);
@@ -72,6 +75,12 @@ class Shark extends Entity {
 		super.update();
 		
 		if (wasConstrained)	refreshTarget();
+	}
+	
+	override function nextFrame ()  {
+		animIndex++;
+		sprite.bitmapData = SpriteSheet.ins.getTile("shark" + (animIndex % 2));
+		animDelay = 15;
 	}
 	
 }

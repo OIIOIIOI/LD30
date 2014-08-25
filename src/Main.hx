@@ -18,6 +18,7 @@ class Main {
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		
+		//Lib.current.stage.addChild(new Test());
 		//Lib.current.stage.addChild(new Editor());
 		
 		KeyboardManager.init(Lib.current.stage);

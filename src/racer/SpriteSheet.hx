@@ -30,10 +30,14 @@ class SpriteSheet {
 		
 		tiles = new Map();
 		for (i in 0...7)	tiles.set("shrimp"+i, createTile(new Rectangle(0, i*32, 32, 32)));
-		for (i in 0...2)	tiles.set("shark"+i, createTile(new Rectangle(32, i*43, 46, 43)));
-		for (i in 0...2)	tiles.set("lobster"+i, createTile(new Rectangle(78, i*48, 46, 48)));
+		tiles.set("starOff", createTile(new Rectangle(0, 7*32, 32, 32)));
+		for (i in 0...2)	tiles.set("shark" + i, createTile(new Rectangle(32, i*49, 46, 49)));
+		for (i in 0...2)	tiles.set("fish" + i, createTile(new Rectangle(32 + 16*i, 98, 16, 8)));
+		for (i in 0...2)	tiles.set("bubble" + i, createTile(new Rectangle(32 + 12*i, 106, 12, 12)));
+		for (i in 0...2)	tiles.set("bubble" + (i+2), createTile(new Rectangle(32 + 12*i, 118, 12, 12)));
+		for (i in 0...3)	tiles.set("lobster"+i, createTile(new Rectangle(78, i*49, 46, 49)));
 		for (i in 0...2)	tiles.set("asteroid"+i, createTile(new Rectangle(124, i*40, 42, 40)));
-		for (i in 0...8)	tiles.set("star" + i, createTile(new Rectangle(166, i * 32, 32, 32)));
+		for (i in 0...8)	tiles.set("star"+i+"on", createTile(new Rectangle(166, i*32, 32, 32)));
 		tiles.set("next0", createTile(new Rectangle(124, 80, 40, 40)));
 	}
 	
