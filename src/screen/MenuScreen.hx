@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.text.Font;
 import flash.text.TextField;
 import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 import screen.Screen;
 import Man;
 
@@ -31,6 +32,7 @@ class MenuScreen extends Screen {
 	var testBtn :MenuBtn;
 	var lvlSnpSht = new Bitmap();
 	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_walrusBitmap(275,186),new C_boatBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_squidBitmap(275,186),new C_clamBitmap(275,186),new C_rustyBitmap(275,186),new C_seagullBitmap(275,186),new C_jellyfishBitmap(275,186)];
+	var snpShtLabel: Array<String> = ["Bebop Beluga", "Toothless Walrus", "Rainbow Tanker", "Neurasthenic Shark", "Sea Weed Spliff", "Kinky Squid", "Drunken Clam", "Rusty Tuna Can", "Seven Seagull", "Jealous Jellyfish"];
 	var snpShtIndex : Int;
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
@@ -50,13 +52,14 @@ class MenuScreen extends Screen {
 		this.addChild(lvlSnpSht);
 		//-----------------------------
 		constellName = new TextField();
-		constellName.width = 250;
+		constellName.width = 400;
 		constellName.height = 30;
-		constellName.x = 375;
+		constellName.x = 250;
 		constellName.y = 306;
-		constellName.text = "blablbla";
-		trace(audioWideFont.fontName);
-		constellName.setTextFormat = new TextFormat ("Arial",25,0xFFFFFF);
+		var ssTxtFmt = new TextFormat(audioWideFont.fontName, 25, 0xFFFFFF);
+		ssTxtFmt.align = TextFormatAlign.CENTER;
+		constellName.defaultTextFormat = ssTxtFmt;
+		constellName.text = snpShtLabel[0];
 		addChild(constellName);
 		//---------------------------------
 		KeyboardManager.setCallback(37,leftSnpShtChange);
@@ -84,6 +87,7 @@ class MenuScreen extends Screen {
 			snpShtIndex = 0;
 		}else{
 			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
+			constellName.text = snpShtLabel[snpShtIndex];
 		}
 	}
 	function rightSnpShtChange() {
@@ -92,6 +96,7 @@ class MenuScreen extends Screen {
 			snpShtIndex = 9;
 		}else{
 			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
+			constellName.text = snpShtLabel[snpShtIndex];
 		}
 	}
 }
