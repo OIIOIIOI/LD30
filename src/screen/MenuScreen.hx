@@ -69,6 +69,7 @@ class MenuScreen extends Screen {
 		var ssTxtFmt = new TextFormat(audioWideFont.fontName, 25, 0xFFFFFF);
 		ssTxtFmt.align = TextFormatAlign.CENTER;
 		constellName.defaultTextFormat = ssTxtFmt;
+		constellName.text = snpShtLabel[snpShtIndex];
 		if(discovered[0]){
 			lvlSnpSht.bitmapData = snpShtBmps[snpShtIndex];
 		}else {
