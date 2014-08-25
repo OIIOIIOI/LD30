@@ -24,6 +24,8 @@ import Man;
 @:bitmap("assets/img/c_smallBtn/c_clam.png") class C_clamBitmap extends BitmapData { }
 @:bitmap("assets/img/c_smallBtn/c_jellyfish.png") class C_jellyfishBitmap extends BitmapData { }
 @:bitmap("assets/img/c_smallBtn/c_seagull.png") class C_seagullBitmap extends BitmapData { }
+@:bitmap("assets/img/c_smallBtn/c_otter.png") class C_otterBitmap extends BitmapData { }
+@:bitmap("assets/img/c_smallBtn/c_eel.png") class C_eelBitmap extends BitmapData { }
 
 @:bitmap("assets/img/ship_2.png") class ShipBmp extends BitmapData { }
 
@@ -33,8 +35,8 @@ class MenuScreen extends Screen {
 	var startBtn :MenuBtn;
 	var testBtn :MenuBtn;
 	var lvlSnpSht = new Bitmap();
-	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_walrusBitmap(275,186),new C_boatBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_squidBitmap(275,186),new C_clamBitmap(275,186),new C_rustyBitmap(275,186),new C_seagullBitmap(275,186),new C_jellyfishBitmap(275,186)];
-	var snpShtLabel: Array<String> = ["Bebop Beluga", "Toothless Walrus", "Rainbow Tanker", "Neurasthenic Shark", "Sea Weed Spliff", "Kinky Squid", "Drunken Clam", "Rusty Tuna Can", "Seven Seagull", "Jealous Jellyfish"];
+	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_walrusBitmap(275,186),new C_boatBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_squidBitmap(275,186),new C_clamBitmap(275,186),new C_rustyBitmap(275,186),new C_seagullBitmap(275,186),new C_jellyfishBitmap(275,186),new C_eelBitmap(275,186),new C_otterBitmap(275,186)];
+	var snpShtLabel: Array<String> = ["Bebop Beluga", "Toothless Walrus", "Rainbow Tanker", "Neurasthenic Shark", "Sea Weed Spliff", "Kinky Squid", "Drunken Clam", "Rusty Tuna Can", "Seven Seagull", "Jealous Jellyfish","Golden Eel","One-eyed Otter"];
 	var snpShtIndex : Int;
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
