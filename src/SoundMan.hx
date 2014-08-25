@@ -17,6 +17,7 @@ import flash.media.SoundTransform;
 @:sound("assets/snd/Tona 03 master.mp3") class Tona3Snd extends Sound { }
 @:sound("assets/snd/Tona 04 master.mp3") class Tona4Snd extends Sound { }
 @:sound("assets/snd/Tona 05 master.mp3") class Tona5Snd extends Sound { }
+//@:sound() class StarSFX extends Sound { }
  
 class SoundMan {
 	
@@ -32,12 +33,23 @@ class SoundMan {
 	var tona4Snd:Sound;
 	var tona5Snd:Sound;
 	
-	var mainChan:SoundChannel;
-	var tona1Chan:SoundChannel;
-	var tona2Chan:SoundChannel;
-	var tona3Chan:SoundChannel;
-	var tona4Chan:SoundChannel;
-	var tona5Chan:SoundChannel;
+	var mainChanA:SoundChannel;
+	var mainChanB:SoundChannel;
+	var lastStartedA:Bool;
+	
+	var tona1ChanA:SoundChannel;
+	var tona2ChanA:SoundChannel;
+	var tona3ChanA:SoundChannel;
+	var tona4ChanA:SoundChannel;
+	var tona5ChanA:SoundChannel;
+	
+	var tona1ChanB:SoundChannel;
+	var tona2ChanB:SoundChannel;
+	var tona3ChanB:SoundChannel;
+	var tona4ChanB:SoundChannel;
+	var tona5ChanB:SoundChannel;
+	
+	var sfx:Map<String, Sound>;
 	
 	public var active(default, null):Int;
 	
@@ -45,6 +57,7 @@ class SoundMan {
 		if (ins != null)	throw new Error("SoundMan already created");
 		ins = this;
 		
+		lastStartedA = false;
 		active = -1;
 		
 		mainSnd = new MainSnd();
@@ -54,53 +67,98 @@ class SoundMan {
 		tona4Snd = new Tona4Snd();
 		tona5Snd = new Tona5Snd();
 		
+		sfx = new Map();
+		//sfx.set("star", new StarSFX());
+		
 		startAll();
 		setActive();
 	}
 	
 	public function startAll () {
-		mainChan = mainSnd.play();
-		mainChan.addEventListener(Event.SOUND_COMPLETE, sndCompleteHander);
+		if (!lastStartedA) {
+			//trace("start A");
+			mainChanA = mainSnd.play(46);
+			mainChanA.addEventListener(Event.SOUND_COMPLETE, killAll);
+			tona1ChanA = tona1Snd.play(46);
+			tona2ChanA = tona2Snd.play(46);
+			tona3ChanA = tona3Snd.play(46);
+			tona4ChanA = tona4Snd.play(46);
+			tona5ChanA = tona5Snd.play(46);
+		} else {
+			//trace("start B");
+			mainChanB = mainSnd.play(46);
+			mainChanB.addEventListener(Event.SOUND_COMPLETE, killAll);
+			tona1ChanB = tona1Snd.play(46);
+			tona2ChanB = tona2Snd.play(46);
+			tona3ChanB = tona3Snd.play(46);
+			tona4ChanB = tona4Snd.play(46);
+			tona5ChanB = tona5Snd.play(46);
+		}
+		lastStartedA = !lastStartedA;
 		
-		tona1Chan = tona1Snd.play();
-		tona2Chan = tona2Snd.play();
-		tona3Chan = tona3Snd.play();
-		tona4Chan = tona4Snd.play();
-		tona5Chan = tona5Snd.play();
-		
-		setActive();
+		applyActive();
 	}
 	
 	public function setActive (a:Int = -1) {
 		if (a > -2 && a < 5)	active = a;
-		//trace(active);
+		applyActive();
+	}
+	
+	public function applyActive () {
+		if (tona1ChanA != null)	tona1ChanA.soundTransform = (active == 0) ? ST_ON : ST_OFF;
+		if (tona2ChanA != null)	tona2ChanA.soundTransform = (active == 1) ? ST_ON : ST_OFF;
+		if (tona3ChanA != null)	tona3ChanA.soundTransform = (active == 2) ? ST_ON : ST_OFF;
+		if (tona4ChanA != null)	tona4ChanA.soundTransform = (active == 3) ? ST_ON : ST_OFF;
+		if (tona5ChanA != null)	tona5ChanA.soundTransform = (active == 4) ? ST_ON : ST_OFF;
 		
-		tona1Chan.soundTransform = (active == 0) ? ST_ON : ST_OFF;
-		tona2Chan.soundTransform = (active == 1) ? ST_ON : ST_OFF;
-		tona3Chan.soundTransform = (active == 2) ? ST_ON : ST_OFF;
-		tona4Chan.soundTransform = (active == 3) ? ST_ON : ST_OFF;
-		tona5Chan.soundTransform = (active == 4) ? ST_ON : ST_OFF;
+		if (tona1ChanB != null)	tona1ChanB.soundTransform = (active == 0) ? ST_ON : ST_OFF;
+		if (tona2ChanB != null)	tona2ChanB.soundTransform = (active == 1) ? ST_ON : ST_OFF;
+		if (tona3ChanB != null)	tona3ChanB.soundTransform = (active == 2) ? ST_ON : ST_OFF;
+		if (tona4ChanB != null)	tona4ChanB.soundTransform = (active == 3) ? ST_ON : ST_OFF;
+		if (tona5ChanB != null)	tona5ChanB.soundTransform = (active == 4) ? ST_ON : ST_OFF;
 	}
 	
-	public function killAll () {
-		mainChan.stop();
-		mainChan = null;
-		tona1Chan.stop();
-		tona1Chan = null;
-		tona2Chan.stop();
-		tona2Chan = null;
-		tona3Chan.stop();
-		tona3Chan = null;
-		tona4Chan.stop();
-		tona4Chan = null;
-		tona5Chan.stop();
-		tona5Chan = null;
+	public function killAll (e:Event) {
+		if (e.currentTarget == mainChanA) {
+			//trace("kill A");
+			mainChanA.stop();
+			mainChanA = null;
+			tona1ChanA.stop();
+			tona1ChanA = null;
+			tona2ChanA.stop();
+			tona2ChanA = null;
+			tona3ChanA.stop();
+			tona3ChanA = null;
+			tona4ChanA.stop();
+			tona4ChanA = null;
+			tona5ChanA.stop();
+			tona5ChanA = null;
+		} else {
+			//trace("kill B");
+			mainChanB.stop();
+			mainChanB = null;
+			tona1ChanB.stop();
+			tona1ChanB = null;
+			tona2ChanB.stop();
+			tona2ChanB = null;
+			tona3ChanB.stop();
+			tona3ChanB = null;
+			tona4ChanB.stop();
+			tona4ChanB = null;
+			tona5ChanB.stop();
+			tona5ChanB = null;
+		}
 	}
 	
-	function sndCompleteHander (e:Event) {
-		mainChan.removeEventListener(Event.SOUND_COMPLETE, sndCompleteHander);
-		killAll();
-		startAll();
+	public function update () {
+		if ((lastStartedA && mainChanA.position >= 113624) || (!lastStartedA && mainChanB.position >= 113624)) {
+			startAll();
+		}
+	}
+	
+	public function playSFX (s:String) {
+		if (!sfx.exists(s))	return;
+		sfx.get(s).play();
 	}
 	
 }

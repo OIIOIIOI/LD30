@@ -264,6 +264,7 @@ class Racer extends Screen {
 			if (dist < player.radius + checkpoints[targetCP].radius / 2) {
 				// Turn star on
 				SoundMan.ins.setActive(SoundMan.ins.active+1);
+				SoundMan.ins.playSFX("star");
 				checkpoints[targetCP].turnOn();
 				for (i in 0...targetCP+1) {
 					starParticles(checkpoints[i]);
