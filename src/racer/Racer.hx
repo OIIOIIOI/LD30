@@ -136,9 +136,12 @@ class Racer extends Screen {
 		container.y = Math.max(Math.min(container.y, 0), -(container.height - Const.STAGE_HEIGHT));
 		
 		step = 1;
+		
+		SoundMan.ins.setActive(-1);
 	}
 	
 	function endGame () {
+		SoundMan.ins.setActive(-1);
 		Man.ins.changeScreen(EScreen.MENU);
 	}
 	
@@ -260,6 +263,7 @@ class Racer extends Screen {
 			var dist = Math.sqrt(dx * dx + dy * dy);
 			if (dist < player.radius + checkpoints[targetCP].radius / 2) {
 				// Turn star on
+				SoundMan.ins.setActive(SoundMan.ins.active+1);
 				checkpoints[targetCP].turnOn();
 				for (i in 0...targetCP+1) {
 					starParticles(checkpoints[i]);
@@ -373,6 +377,7 @@ class Racer extends Screen {
 			if (Std.is(e, Player) || Std.is(f, Player)) {
 				cockpit.hurt();
 				shakeTimer = 15;
+				SoundMan.ins.setActive(Std.int(Math.max(0, SoundMan.ins.active-1)));
 			}
 		}
 	}

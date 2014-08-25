@@ -27,6 +27,8 @@ class Main {
 		
 		KeyboardManager.init(Lib.current.stage);
 		
+		new SoundMan();
+		
 		new Man();
 		Man.ins.changeScreen(EScreen.TITLE);
 		
