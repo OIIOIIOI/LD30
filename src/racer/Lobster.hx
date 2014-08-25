@@ -35,7 +35,7 @@ class Lobster extends Entity {
 	}
 	
 	public function goForEntity (e:Entity) {
-		if (dx != 0 || dy != 0) {
+		if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
 			sprite.bitmapData = SpriteSheet.ins.getTile("lobster2");
 			return;
 		}

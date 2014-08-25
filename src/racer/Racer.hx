@@ -277,6 +277,7 @@ class Racer extends Screen {
 					container.scaleX = container.scaleY = 1;
 					next.dead = true;
 					player.dead = true;
+					killAll();
 				}
 			}
 		} else if (raceComplete) {
@@ -320,6 +321,15 @@ class Racer extends Screen {
 			shakeTimer--;
 			cameraShake();
 		}
+	}
+	
+	function killAll () {
+		for (e in entities) {
+			if (Std.is(e, Lobster) || Std.is(e, Shark) || Std.is(e, Asteroid) || Std.is(e, Fish)) {
+				e.dead = true;
+			}
+		}
+		entities = entities.filter(filterDead);
 	}
 	
 	function filterDead (e:Entity) :Bool {
