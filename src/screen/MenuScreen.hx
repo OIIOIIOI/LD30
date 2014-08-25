@@ -25,6 +25,8 @@ import Man;
 @:bitmap("assets/img/c_smallBtn/c_jellyfish.png") class C_jellyfishBitmap extends BitmapData { }
 @:bitmap("assets/img/c_smallBtn/c_seagull.png") class C_seagullBitmap extends BitmapData { }
 
+@:bitmap("assets/img/ship_2.png") class ShipBmp extends BitmapData { }
+
 @:font("Assets/font/Audiowide-Regular.ttf") class AudioWideFont extends Font { }
 
 class MenuScreen extends Screen {
@@ -42,26 +44,34 @@ class MenuScreen extends Screen {
 		snpShtIndex = 0;
 		//------------------------
 		startBtn = new MenuBtn(Start,startClicked);
-		startBtn.x = 300;
-		startBtn.y = 350;
+		startBtn.x = 140;
+		startBtn.y = 400;
 		addChild(startBtn);
 		//--------------------------
 		lvlSnpSht.bitmapData = snpShtBmps[0];
-		lvlSnpSht.x = 312;
-		lvlSnpSht.y = 120;
+		lvlSnpSht.x = 172;
+		lvlSnpSht.y = 180;
 		this.addChild(lvlSnpSht);
 		//-----------------------------
 		constellName = new TextField();
 		constellName.width = 400;
 		constellName.height = 30;
-		constellName.x = 250;
-		constellName.y = 306;
+		constellName.x = 90;
+		constellName.y = 356;
 		var ssTxtFmt = new TextFormat(audioWideFont.fontName, 25, 0xFFFFFF);
 		ssTxtFmt.align = TextFormatAlign.CENTER;
 		constellName.defaultTextFormat = ssTxtFmt;
 		constellName.text = snpShtLabel[0];
 		addChild(constellName);
 		//---------------------------------
+		var openPod = new Bitmap();
+		openPod.bitmapData = new ShipBmp(446,522);
+		openPod.x = 430;
+		openPod.y = 120;
+		openPod.scaleX = 0.8;
+		openPod.scaleY = 0.8;
+		addChild(openPod);
+		//-------------------------------------
 		KeyboardManager.setCallback(37,leftSnpShtChange);
 		KeyboardManager.setCallback(39,rightSnpShtChange);
 		KeyboardManager.setCallback(13,startClicked);
