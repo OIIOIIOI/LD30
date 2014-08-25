@@ -38,8 +38,9 @@ class SpriteSheet {
 		for (i in 0...3)	tiles.set("lobster"+i, createTile(new Rectangle(78, i*49, 46, 49)));
 		for (i in 0...2)	tiles.set("asteroid"+i, createTile(new Rectangle(124, i*40, 42, 40)));
 		for (i in 0...8)	tiles.set("star"+i+"on", createTile(new Rectangle(166, i*32, 32, 32)));
-		tiles.set("next0", createTile(new Rectangle(124, 80, 40, 40)));
-		for (i in 0...3)	tiles.set("cockpit"+i, createTile(new Rectangle(198, i*28, 70, 28)));
+		tiles.set("next", createTile(new Rectangle(124, 80, 40, 40)));
+		for (i in 0...3)	tiles.set("cockpit"+i, createTile(new Rectangle(198, i*30, 70, 30)));
+		for (i in 0...5)	tiles.set("dash"+i, createTile(new Rectangle(198, 90+i*10, 70, 10)));
 	}
 	
 	function createTile (r:Rectangle) :BitmapData {

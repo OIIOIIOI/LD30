@@ -12,7 +12,7 @@ class Player extends Entity {
 	
 	static public var DASH_DELAY:Int = 180;
 	
-	var dashTimer:Int;
+	public var dashTimer:Int;
 	
 	public function new () {
 		super();

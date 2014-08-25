@@ -36,4 +36,11 @@ class Cockpit extends Entity {
 		sprite.bitmapData = SpriteSheet.ins.getTile("cockpit"+animIndex);
 	}
 	
+	override public function update ()  {
+		super.update();
+		
+		x = Const.STAGE_WIDTH - sprite.width / 2;
+		y = Const.STAGE_HEIGHT - 30 - sprite.height / 2;
+	}
+	
 }
