@@ -11,6 +11,7 @@ import flash.utils.Function;
  * @author Grmpf
  */
 
+@:bitmap("assets/img/startBtn.png") class StartBtnBitmap extends BitmapData {}
 @:bitmap("assets/img/testBtn.jpg") class TestBtnBitmap extends BitmapData {}
  
 class MenuBtn extends Sprite
@@ -24,11 +25,14 @@ class MenuBtn extends Sprite
 		var currentBtnAspect = new Bitmap();
 		this.action = action;
 		switch(btnAspect) {
-			case Test:
-				loadedBitmap = new TestBtnBitmap(98, 44);
+			case Start:
+				loadedBitmap = new StartBtnBitmap(300, 100);
 				currentBtnAspect.bitmapData = loadedBitmap;
 				this.addChild(currentBtnAspect);
 			default:
+				loadedBitmap = new TestBtnBitmap(98, 44);
+				currentBtnAspect.bitmapData = loadedBitmap;
+				this.addChild(currentBtnAspect);
 		}
 		this.addEventListener(MouseEvent.CLICK, execute);
 	}
@@ -43,4 +47,5 @@ class MenuBtn extends Sprite
 }
 enum BtnAspect {
 	Test;
+	Start;
 }
