@@ -20,12 +20,24 @@ import StarEdit;
  * @author 01101101
  */
 
-@:bitmap("assets/shark.png") class SharkBG extends BitmapData {}
-@:bitmap("assets/gayboat.png") class BoatBG extends BitmapData {}
-@:bitmap("assets/drunk_clam.png") class ClamBG extends BitmapData {}
+@:bitmap("assets/img/space_01.png") class SpaceBG extends BitmapData { }
+
+@:bitmap("assets/img/c_beluga.png") class Beluga extends BitmapData {}
+@:bitmap("assets/img/c_boat.png") class Boat extends BitmapData {}
+@:bitmap("assets/img/c_clam.png") class Clam extends BitmapData {}
+@:bitmap("assets/img/c_eel.png") class Eel extends BitmapData {}
+@:bitmap("assets/img/c_jellyfish.png") class Jellyfish extends BitmapData {}
+@:bitmap("assets/img/c_otter.png") class Otter extends BitmapData {}
+@:bitmap("assets/img/c_rusty.png") class Rusty extends BitmapData {}
+@:bitmap("assets/img/c_seagull.png") class Seagull extends BitmapData {}
+@:bitmap("assets/img/c_shark.png") class Shark extends BitmapData {}
+@:bitmap("assets/img/c_spliff.png") class Spliff extends BitmapData {}
+@:bitmap("assets/img/c_squid.png") class Squid extends BitmapData {}
+@:bitmap("assets/img/c_walrus.png") class Walrus extends BitmapData {}
 
 class Editor extends Sprite {
 	
+	var bmpbg:Bitmap;
 	var bmp:Bitmap;
 	var bds:Array<BitmapData>;
 	var bdIndex:Int;
@@ -43,15 +55,28 @@ class Editor extends Sprite {
 		super();
 		
 		bds = new Array();
-		bds.push(new SharkBG(900, 610));
-		bds.push(new BoatBG(900, 610));
-		bds.push(new ClamBG(900, 610));
+		bds.push(new Beluga(900, 610));
+		bds.push(new Boat(900, 610));
+		bds.push(new Clam(900, 610));
+		bds.push(new Eel(900, 610));
+		bds.push(new Jellyfish(900, 610));
+		bds.push(new Otter(900, 610));
+		bds.push(new Rusty(900, 610));
+		bds.push(new Seagull(900, 610));
+		bds.push(new Shark(900, 610));
+		bds.push(new Spliff(900, 610));
+		bds.push(new Squid(900, 610));
+		bds.push(new Walrus(900, 610));
 		bdIndex = -1;
 		
 		stars = new Array();
 		const = new Array();
 		
+		bmpbg = new Bitmap(new SpaceBG(900, 610));
+		addChild(bmpbg);
+		
 		bmp = new Bitmap();
+		bmp.alpha = 0.1;
 		addChild(bmp);
 		
 		constPath = new Sprite();
@@ -212,9 +237,9 @@ class Editor extends Sprite {
 	
 	function rightClickHandler (e:MouseEvent) {
 		var string = "";
-		for (s in stars) {
-			string += s;
-			if (s != stars[stars.length - 1])	string += ";";
+		for (s in const) {
+			string += s.x + "," + s.y;
+			if (s != const[const.length - 1])	string += ";";
 		}
 		System.setClipboard(string);
 	}

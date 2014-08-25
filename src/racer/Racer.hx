@@ -3,6 +3,7 @@ package racer ;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
+import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 import screen.Screen;
 
@@ -11,13 +12,26 @@ import screen.Screen;
  * @author 01101101
  */
 
-@:bitmap("assets/img/space_01.png") class SharkBG extends BitmapData { }
+@:bitmap("assets/img/space_01.png") class SpaceBG extends BitmapData { }
+@:bitmap("assets/img/c_beluga.png") class Beluga extends BitmapData { }
+@:bitmap("assets/img/c_boat.png") class Boat extends BitmapData { }
+@:bitmap("assets/img/c_clam.png") class Clam extends BitmapData { }
+@:bitmap("assets/img/c_eel.png") class Eel extends BitmapData { }
+@:bitmap("assets/img/c_jellyfish.png") class Jellyfish extends BitmapData { }
+@:bitmap("assets/img/c_otter.png") class Otter extends BitmapData { }
+@:bitmap("assets/img/c_rusty.png") class Rusty extends BitmapData { }
+@:bitmap("assets/img/c_seagull.png") class Seagull extends BitmapData { }
+@:bitmap("assets/img/c_shark.png") class Shark extends BitmapData { }
+@:bitmap("assets/img/c_spliff.png") class Spliff extends BitmapData { }
+@:bitmap("assets/img/c_squid.png") class Squid extends BitmapData { }
+@:bitmap("assets/img/c_walrus.png") class Walrus extends BitmapData { }
 
 class Racer extends Screen {
 	
 	var entities:Array<Entity>;
 	var container:Sprite;
 	var canvas:Bitmap;
+	var overlay:Bitmap;
 	var player:Entity;
 	var next:Next;
 	var checkpoints:Array<Checkpoint>;
@@ -32,13 +46,17 @@ class Racer extends Screen {
 		
 		container = new Sprite();
 		
-		canvas = new Bitmap(new SharkBG(900, 610));
+		canvas = new Bitmap(new SpaceBG(900, 610));
 		container.addChild(canvas);
+		
+		overlay = new Bitmap();
+		overlay.alpha = 0;
+		container.addChild(overlay);
 		
 		paths = new Sprite();
 		container.addChild(paths);
 		
-		initMap();
+		initMap(ELevel.LShark);
 		
 		next = new Next();
 		container.addChild(next.sprite);
@@ -52,15 +70,53 @@ class Racer extends Screen {
 		
 		container.scaleX = container.scaleY = Const.SCALE;
 		addChild(container);
+		
+		container.addEventListener(MouseEvent.CLICK, clickHandler);
 	}
 	
-	public function initMap () {
+	function clickHandler (e:MouseEvent) {
+		trace(e.stageX + ", " + e.stageY);
+	}
+	
+	public function initMap (l:ELevel) {
+		overlay.bitmapData = switch (l) {
+			case ELevel.LBeluga:	new Beluga(900, 610);
+			case ELevel.LBoat:		new Boat(900, 610);
+			case ELevel.LClam:		new Clam(900, 610);
+			case ELevel.LEel:		new Eel(900, 610);
+			case ELevel.LJellyfish:	new Jellyfish(900, 610);
+			case ELevel.LOtter:		new Otter(900, 610);
+			case ELevel.LRusty:		new Rusty(900, 610);
+			case ELevel.LSeagull:	new Seagull(900, 610);
+			case ELevel.LShark:		new Shark(900, 610);
+			case ELevel.LSpliff:	new Spliff(900, 610);
+			case ELevel.LSquid:		new Squid(900, 610);
+			case ELevel.LWalrus:	new Walrus(900, 610);
+		}
+		
+		var s = switch (l) {
+			case ELevel.LBeluga:	"114,493;321,473;230,432;275,365;422,348;514,334;641,395;581,286;683,231;645,119;457,162;270,303";
+			case ELevel.LBoat:		"299,230;335,333;431,158;416,291;569,212;714,203;604,441;310,467;210,439;182,361;164,268;381,102;336,60;171,218;222,103;132,212";
+			case ELevel.LClam:		"343,266;200,173;187,112;395,190;572,122;715,134;740,251;602,286;467,302;375,343;276,394;382,433;580,405;683,343;611,451;645,399;697,425";
+			case ELevel.LEel:		"226,178;364,192;432,297;562,328;690,319;703,229;547,158;282,87;132,185;146,324;260,447;513,487;638,444;598,411;641,382";
+			case ELevel.LJellyfish:	"549,374;697,432;734,355;748,244;714,141;629,80;599,121;547,110;480,113;444,160;452,264;373,239;247,182;336,269;138,381;356,315;245,474;401,349;382,546;594,491;429,475;440,399;467,319";
+			case ELevel.LOtter:		"285,205;289,113;219,72;143,109;176,255;188,353;235,400;289,407;323,369;440,356;518,363;481,413;569,362;670,395;755,463;563,245;397,197;328,227";
+			case ELevel.LRusty:		"283,433;339,489;519,481;665,392;623,312;526,372;364,406;261,397;371,329;553,296;379,259;237,208;364,174;539,175;654,244;609,280";
+			case ELevel.LSeagull:	"415,396;496,484;407,538;492,535;561,511;561,545;609,471;728,410;569,378;482,292;553,258;455,207;412,244;425,134;212,95;347,162;270,250;227,361";
+			case ELevel.LShark	:	"548,183;378,64;364,186;266,255;222,369;98,243;147,386;286,549;280,459;379,387;446,451;509,377;603,441;553,319;688,374;796,275;658,230";
+			case ELevel.LSpliff:	"152,199;181,188;421,258;652,340;597,379;633,437;770,440;670,471;772,504;602,508;452,414;593,456;543,370;200,225";
+			case ELevel.LSquid:		"597,132;747,48;735,136;694,144;551,285;513,370;427,419;306,373;314,286;371,233;546,156;532,123;254,169;193,332;260,413;208,530;296,457;307,525;421,558;537,453;679,377;744,410";
+			case ELevel.LWalrus:	"225,330;304,229;432,227;476,98;594,38;684,128;618,179;597,380;505,413;377,498;414,399;212,369;141,492;142,401;80,379";
+		}
+		var a = s.split(";");
+		
 		checkpoints = new Array();
 		var cp:Checkpoint;
-		for (i in 0...10) {
+		for (i in 0...a.length) {
+			var b = a[i].split(",");
 			cp = new Checkpoint(i);
-			cp.x = Std.random(Const.STAGE_WIDTH - cp.radius * 2) + cp.radius;
-			cp.y = Std.random(Const.STAGE_HEIGHT - cp.radius * 2) + cp.radius;
+			cp.x = Std.parseInt(b[0]);
+			cp.y = Std.parseInt(b[1]);
 			checkpoints.push(cp);
 			container.addChild(cp.sprite);
 			entities.push(cp);
@@ -114,6 +170,10 @@ class Racer extends Screen {
 					player.dead = true;
 				}
 			}
+		} else {
+			if (overlay.alpha < 0.4) {
+				overlay.alpha += 0.005;
+			}
 		}
 		// Update
 		for (e in entities) {
@@ -142,4 +202,19 @@ class Racer extends Screen {
 		container.y = Math.max(Math.min(container.y, 0), -(container.height - Const.STAGE_HEIGHT));
 	}
 	
+}
+
+enum ELevel {
+	LBeluga;
+	LBoat;
+	LClam;
+	LEel;
+	LJellyfish;
+	LOtter;
+	LRusty;
+	LSeagull;
+	LShark;
+	LSpliff;
+	LSquid;
+	LWalrus;
 }
