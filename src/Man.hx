@@ -1,6 +1,7 @@
 package ;
 
 import flash.Lib;
+import racer.Racer;
 import screen.MenuScreen;
 import screen.Screen;
 import shooter.Shooter;
@@ -36,6 +37,7 @@ class Man {
 		curScr = switch (e) {
 			case EScreen.MENU:			new MenuScreen();
 			case EScreen.SHOOTER:		new Shooter();
+			case EScreen.RACER:			new Racer();
 		}
 		Lib.current.stage.addChild(curScr);
 		curEScr = e;
@@ -52,4 +54,5 @@ class Man {
 enum EScreen {
 	MENU;
 	SHOOTER;
+	RACER;
 }

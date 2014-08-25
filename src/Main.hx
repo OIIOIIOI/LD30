@@ -5,7 +5,6 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.Lib;
 import Man;
-import shooter.Shooter;
 
 /**
  * ...
@@ -19,9 +18,10 @@ class Main {
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.align = StageAlign.TOP_LEFT;
 		
+		KeyboardManager.init(Lib.current.stage);
 		new Man();
 		
-		Man.ins.changeScreen(EScreen.SHOOTER);
+		Man.ins.changeScreen(EScreen.RACER);
 		
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, update);
 	}

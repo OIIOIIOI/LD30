@@ -11,6 +11,10 @@ import flash.geom.Rectangle;
 
 class Const {
 	
+	static public var STAGE_WIDTH:Int = 900;
+	static public var STAGE_HEIGHT:Int = 610;
+	static public var SCALE:Int = 2;
+	
 	static public var CANVAS_WIDTH:Int = 225;
 	static public var CANVAS_HEIGHT:Int = 150;
 	static public var CANVAS_SCALE:Int = 4;
