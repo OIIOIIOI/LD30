@@ -40,6 +40,7 @@ class Editor extends Sprite {
 	var bmpbg:Bitmap;
 	var bmp:Bitmap;
 	var bds:Array<BitmapData>;
+	var datas:Array<String>;
 	var bdIndex:Int;
 	
 	var bg:Sprite;
@@ -69,6 +70,20 @@ class Editor extends Sprite {
 		bds.push(new Walrus(900, 610));
 		bdIndex = -1;
 		
+		datas = new Array();
+		datas.push("114,493;321,473;230,432;275,365;422,348;514,334;641,395;581,286;683,231;645,119;457,162;270,303");
+		datas.push("299,230;335,333;431,158;416,291;569,212;714,203;604,441;310,467;210,439;182,361;164,268;381,102;336,60;171,218;222,103;132,212");
+		datas.push("343,266;200,173;187,112;395,190;572,122;715,134;740,251;602,286;467,302;375,343;276,394;382,433;580,405;683,343;611,451;645,399;697,425");
+		datas.push("226,178,CHECKPOINT,14;364,192,CHECKPOINT,13;432,297,CHECKPOINT,12;562,328,CHECKPOINT,11;690,319,CHECKPOINT,10;703,229,CHECKPOINT,9;547,158,CHECKPOINT,8;282,87,CHECKPOINT,7;132,185,CHECKPOINT,6;146,324,CHECKPOINT,5;260,447,CHECKPOINT,4;513,487,CHECKPOINT,3;638,444,CHECKPOINT,2;598,411,CHECKPOINT,1;641,382,CHECKPOINT,0;289,307,LOBSTER,-1");
+		datas.push("549,374;697,432;734,355;748,244;714,141;629,80;599,121;547,110;480,113;444,160;452,264;373,239;247,182;336,269;138,381;356,315;245,474;401,349;382,546;594,491;429,475;440,399;467,319");
+		datas.push("285,205;289,113;219,72;143,109;176,255;188,353;235,400;289,407;323,369;440,356;518,363;481,413;569,362;670,395;755,463;563,245;397,197;328,227");
+		datas.push("283,433;339,489;519,481;665,392;623,312;526,372;364,406;261,397;371,329;553,296;379,259;237,208;364,174;539,175;654,244;609,280");
+		datas.push("415,396;496,484;407,538;492,535;561,511;561,545;609,471;728,410;569,378;482,292;553,258;455,207;412,244;425,134;212,95;347,162;270,250;227,361");
+		datas.push("548,183;378,64;364,186;266,255;222,369;98,243;147,386;286,549;280,459;379,387;446,451;509,377;603,441;553,319;688,374;796,275;658,230");
+		datas.push("152,199;181,188;421,258;652,340;597,379;633,437;770,440;670,471;772,504;602,508;452,414;593,456;543,370;200,225");
+		datas.push("597,132;747,48;735,136;694,144;551,285;513,370;427,419;306,373;314,286;371,233;546,156;532,123;254,169;193,332;260,413;208,530;296,457;307,525;421,558;537,453;679,377;744,410");
+		datas.push("225,330;304,229;432,227;476,98;594,38;684,128;618,179;597,380;505,413;377,498;414,399;212,369;141,492;142,401;80,379");
+		
 		stars = new Array();
 		const = new Array();
 		
@@ -76,7 +91,7 @@ class Editor extends Sprite {
 		addChild(bmpbg);
 		
 		bmp = new Bitmap();
-		bmp.alpha = 0.1;
+		bmp.alpha = 0.2;
 		addChild(bmp);
 		
 		constPath = new Sprite();
@@ -116,10 +131,10 @@ class Editor extends Sprite {
 				drawConst();
 			case Keyboard.ENTER:
 				if (!contains(tf))	openTF();
-				else				parseTF();
+				else				parseTF(tf.text);
 			case Keyboard.DELETE:
 				reset();
-			case Keyboard.TAB:
+			case Keyboard.A:
 				bdIndex++;
 				if (bdIndex == bds.length) {
 					bmp.bitmapData = null;
@@ -129,11 +144,24 @@ class Editor extends Sprite {
 				} else {
 					bmp.bitmapData = bds[bdIndex];
 				}
+			case Keyboard.TAB:
+				bdIndex++;
+				if (bdIndex == bds.length) {
+					bmp.bitmapData = null;
+					reset();
+				} else if (bdIndex > bds.length) {
+					bdIndex = 0;
+					bmp.bitmapData = bds[bdIndex];
+					parseTF(datas[bdIndex]);
+				} else {
+					bmp.bitmapData = bds[bdIndex];
+					parseTF(datas[bdIndex]);
+				}
 		}
 	}
 	
 	function update (e:Event) {
-		drawPaths();
+		//drawPaths();
 		drawConst();
 	}
 	
@@ -168,27 +196,27 @@ class Editor extends Sprite {
 		addChild(tf);
 	}
 	
-	function parseTF () {
+	function parseTF (string:String) {
 		reset();
-		removeChild(tf);
+		if (contains(tf))	removeChild(tf);
 		
-		var string = tf.text;
+		//var string = tf.text;
 		var a = string.split(";");
+		//trace(a.length);
 		for (i in 0...a.length) {
 			var b = a[i].split(",");
-			if (b.length != 5)	break;
+			//if (b.length != 4)	break;
 			
 			var s = new StarEdit();
 			s.x = Std.parseFloat(b[0]);
 			s.y = Std.parseFloat(b[1]);
-			s.size = Std.parseInt(b[2]);
-			s.type = StarType.createByName(b[3]);
-			s.constIndex = Std.parseInt(b[4]);
+			if (b.length >= 3)	s.type = StarType.createByName(b[2]);
+			if (b.length >= 4)	s.constIndex = Std.parseInt(b[3]);
 			s.draw();
 			stars.push(s);
 			addChild(s);
+			//trace(s);
 			s.addEventListener(MouseEvent.CLICK, starClickHandler);
-			s.addEventListener(MouseEvent.MOUSE_WHEEL, starWheelHandler);
 			s.addEventListener(MouseEvent.RIGHT_CLICK, starRightClickHandler);
 			s.addEventListener(MouseEvent.MOUSE_DOWN, starDownHandler);
 			
@@ -208,9 +236,8 @@ class Editor extends Sprite {
 	
 	function reset () {
 		for (s in stars) {
-			removeChild(s);
+			if (contains(s))	removeChild(s);
 			s.removeEventListener(MouseEvent.CLICK, starClickHandler);
-			s.removeEventListener(MouseEvent.MOUSE_WHEEL, starWheelHandler);
 			s.removeEventListener(MouseEvent.RIGHT_CLICK, starRightClickHandler);
 			s.removeEventListener(MouseEvent.MOUSE_DOWN, starDownHandler);
 			s.removeEventListener(MouseEvent.MOUSE_OUT, starUpHandler);
@@ -230,16 +257,15 @@ class Editor extends Sprite {
 		stars.push(s);
 		addChild(s);
 		s.addEventListener(MouseEvent.CLICK, starClickHandler);
-		s.addEventListener(MouseEvent.MOUSE_WHEEL, starWheelHandler);
 		s.addEventListener(MouseEvent.RIGHT_CLICK, starRightClickHandler);
 		s.addEventListener(MouseEvent.MOUSE_DOWN, starDownHandler);
 	}
 	
 	function rightClickHandler (e:MouseEvent) {
 		var string = "";
-		for (s in const) {
-			string += s.x + "," + s.y;
-			if (s != const[const.length - 1])	string += ";";
+		for (s in stars) {
+			string += s;
+			if (s != stars[stars.length - 1])	string += ";";
 		}
 		System.setClipboard(string);
 	}
@@ -269,17 +295,12 @@ class Editor extends Sprite {
 	function starClickHandler (e:MouseEvent) {
 		var s:StarEdit = cast(e.currentTarget);
 		if (e.ctrlKey)	s.cycleType();
-		if (e.shiftKey) {
+		if (e.shiftKey && s.type == StarType.CHECKPOINT) {
 			s.constIndex = const.length;
 			s.draw();
 			const.push(s);
 			drawConst();
 		}
-	}
-	
-	function starWheelHandler (e:MouseEvent) {
-		var s:StarEdit = cast(e.currentTarget);
-		s.resize(e.delta);
 	}
 	
 	function starRightClickHandler (e:MouseEvent) {

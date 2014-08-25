@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
+import racer.Entity.EEntityType;
 import screen.Screen;
 
 /**
@@ -12,19 +13,22 @@ import screen.Screen;
  * @author 01101101
  */
 
-@:bitmap("assets/img/space_01.png") class SpaceBG extends BitmapData { }
-@:bitmap("assets/img/c_beluga.png") class Beluga extends BitmapData { }
-@:bitmap("assets/img/c_boat.png") class Boat extends BitmapData { }
-@:bitmap("assets/img/c_clam.png") class Clam extends BitmapData { }
-@:bitmap("assets/img/c_eel.png") class Eel extends BitmapData { }
-@:bitmap("assets/img/c_jellyfish.png") class Jellyfish extends BitmapData { }
-@:bitmap("assets/img/c_otter.png") class Otter extends BitmapData { }
-@:bitmap("assets/img/c_rusty.png") class Rusty extends BitmapData { }
-@:bitmap("assets/img/c_seagull.png") class Seagull extends BitmapData { }
-@:bitmap("assets/img/c_shark.png") class Shark extends BitmapData { }
-@:bitmap("assets/img/c_spliff.png") class Spliff extends BitmapData { }
-@:bitmap("assets/img/c_squid.png") class Squid extends BitmapData { }
-@:bitmap("assets/img/c_walrus.png") class Walrus extends BitmapData { }
+@:bitmap("assets/img/space_01.png")		class Space1BG extends BitmapData { }
+@:bitmap("assets/img/space_02.png")		class Space2BG extends BitmapData { }
+@:bitmap("assets/img/space_03.png")		class Space3BG extends BitmapData { }
+
+@:bitmap("assets/img/c_beluga.png")		class CBeluga extends BitmapData { }
+@:bitmap("assets/img/c_boat.png")		class CBoat extends BitmapData { }
+@:bitmap("assets/img/c_clam.png")		class CClam extends BitmapData { }
+@:bitmap("assets/img/c_eel.png")		class CEel extends BitmapData { }
+@:bitmap("assets/img/c_jellyfish.png")	class CJellyfish extends BitmapData { }
+@:bitmap("assets/img/c_otter.png")		class COtter extends BitmapData { }
+@:bitmap("assets/img/c_rusty.png")		class CRusty extends BitmapData { }
+@:bitmap("assets/img/c_seagull.png")	class CSeagull extends BitmapData { }
+@:bitmap("assets/img/c_shark.png")		class CShark extends BitmapData { }
+@:bitmap("assets/img/c_spliff.png")		class CSpliff extends BitmapData { }
+@:bitmap("assets/img/c_squid.png")		class CSquid extends BitmapData { }
+@:bitmap("assets/img/c_walrus.png")		class CWalrus extends BitmapData { }
 
 class Racer extends Screen {
 	
@@ -32,21 +36,31 @@ class Racer extends Screen {
 	var container:Sprite;
 	var canvas:Bitmap;
 	var overlay:Bitmap;
-	var player:Entity;
+	var player:Player;
 	var next:Next;
 	var checkpoints:Array<Checkpoint>;
 	var targetCP:Int;
 	var paths:Sprite;
 	var raceComplete:Bool;
 	
+	var showCol:Bool;
+	
 	public function new () {
 		super();
+		
+		new SpriteSheet();
+		
+		showCol = false;
 		
 		entities = new Array();
 		
 		container = new Sprite();
 		
-		canvas = new Bitmap(new SpaceBG(900, 610));
+		canvas = switch (Std.random(3)) {
+			case 0:		new Bitmap(new Space1BG(900, 610));
+			case 1:		new Bitmap(new Space2BG(900, 610));
+			default:	new Bitmap(new Space3BG(900, 610));
+		}
 		container.addChild(canvas);
 		
 		overlay = new Bitmap();
@@ -56,46 +70,42 @@ class Racer extends Screen {
 		paths = new Sprite();
 		container.addChild(paths);
 		
-		initMap(ELevel.LShark);
+		initMap(ELevel.LBeluga);
 		
 		next = new Next();
 		container.addChild(next.sprite);
+		if (showCol)	container.addChild(next.colSprite);
 		entities.push(next);
 		
 		player = new Player();
-		player.x = Const.STAGE_WIDTH / 2;
-		player.y = Const.STAGE_HEIGHT / 2;
+		player.x = checkpoints[targetCP].x;
+		player.y = checkpoints[targetCP].y;
 		container.addChild(player.sprite);
+		if (showCol)	container.addChild(player.colSprite);
 		entities.push(player);
 		
 		container.scaleX = container.scaleY = Const.SCALE;
 		addChild(container);
-		
-		container.addEventListener(MouseEvent.CLICK, clickHandler);
-	}
-	
-	function clickHandler (e:MouseEvent) {
-		trace(e.stageX + ", " + e.stageY);
 	}
 	
 	public function initMap (l:ELevel) {
 		overlay.bitmapData = switch (l) {
-			case ELevel.LBeluga:	new Beluga(900, 610);
-			case ELevel.LBoat:		new Boat(900, 610);
-			case ELevel.LClam:		new Clam(900, 610);
-			case ELevel.LEel:		new Eel(900, 610);
-			case ELevel.LJellyfish:	new Jellyfish(900, 610);
-			case ELevel.LOtter:		new Otter(900, 610);
-			case ELevel.LRusty:		new Rusty(900, 610);
-			case ELevel.LSeagull:	new Seagull(900, 610);
-			case ELevel.LShark:		new Shark(900, 610);
-			case ELevel.LSpliff:	new Spliff(900, 610);
-			case ELevel.LSquid:		new Squid(900, 610);
-			case ELevel.LWalrus:	new Walrus(900, 610);
+			case ELevel.LBeluga:	new CBeluga(900, 610);
+			case ELevel.LBoat:		new CBoat(900, 610);
+			case ELevel.LClam:		new CClam(900, 610);
+			case ELevel.LEel:		new CEel(900, 610);
+			case ELevel.LJellyfish:	new CJellyfish(900, 610);
+			case ELevel.LOtter:		new COtter(900, 610);
+			case ELevel.LRusty:		new CRusty(900, 610);
+			case ELevel.LSeagull:	new CSeagull(900, 610);
+			case ELevel.LShark:		new CShark(900, 610);
+			case ELevel.LSpliff:	new CSpliff(900, 610);
+			case ELevel.LSquid:		new CSquid(900, 610);
+			case ELevel.LWalrus:	new CWalrus(900, 610);
 		}
 		
 		var s = switch (l) {
-			case ELevel.LBeluga:	"114,493;321,473;230,432;275,365;422,348;514,334;641,395;581,286;683,231;645,119;457,162;270,303";
+			case ELevel.LBeluga:	"114,493,CHECKPOINT,1;321,473,CHECKPOINT,0;230,432,CHECKPOINT,2;275,365,CHECKPOINT,3;422,348,CHECKPOINT,11;514,334,CHECKPOINT,10;641,395,CHECKPOINT,9;581,286,CHECKPOINT,8;683,231,CHECKPOINT,7;645,119,CHECKPOINT,6;457,162,CHECKPOINT,5;270,303,CHECKPOINT,4;547,200,ASTEROID,-1";
 			case ELevel.LBoat:		"299,230;335,333;431,158;416,291;569,212;714,203;604,441;310,467;210,439;182,361;164,268;381,102;336,60;171,218;222,103;132,212";
 			case ELevel.LClam:		"343,266;200,173;187,112;395,190;572,122;715,134;740,251;602,286;467,302;375,343;276,394;382,433;580,405;683,343;611,451;645,399;697,425";
 			case ELevel.LEel:		"226,178;364,192;432,297;562,328;690,319;703,229;547,158;282,87;132,185;146,324;260,447;513,487;638,444;598,411;641,382";
@@ -108,21 +118,42 @@ class Racer extends Screen {
 			case ELevel.LSquid:		"597,132;747,48;735,136;694,144;551,285;513,370;427,419;306,373;314,286;371,233;546,156;532,123;254,169;193,332;260,413;208,530;296,457;307,525;421,558;537,453;679,377;744,410";
 			case ELevel.LWalrus:	"225,330;304,229;432,227;476,98;594,38;684,128;618,179;597,380;505,413;377,498;414,399;212,369;141,492;142,401;80,379";
 		}
+		
 		var a = s.split(";");
 		
 		checkpoints = new Array();
-		var cp:Checkpoint;
+		
 		for (i in 0...a.length) {
 			var b = a[i].split(",");
-			cp = new Checkpoint(i);
-			cp.x = Std.parseInt(b[0]);
-			cp.y = Std.parseInt(b[1]);
-			checkpoints.push(cp);
-			container.addChild(cp.sprite);
-			entities.push(cp);
+			
+			if (b.length != 4)	continue;
+			
+			var e = switch (EEntityType.createByName(b[2])) {
+				case EEntityType.CHECKPOINT:	new Checkpoint(Std.parseInt(b[3]));
+				case EEntityType.ASTEROID:		new Asteroid();
+				case EEntityType.SHARK:			new Shark();
+				case EEntityType.LOBSTER:		new Lobster();
+			}
+			e.x = Std.parseInt(b[0]);
+			e.y = Std.parseInt(b[1]);
+			
+			if (Std.is(e, Checkpoint))	checkpoints.push(cast(e));
+			
+			container.addChild(e.sprite);
+			if (showCol)	container.addChild(e.colSprite);
+			entities.push(e);
 		}
+		
+		checkpoints.sort(sortCP);
+		
 		targetCP = 0;
 		raceComplete = false;
+	}
+	
+	function sortCP (a:Checkpoint, b:Checkpoint) :Int {
+		if (a.order > b.order)		return 1;
+		else if (a.order < b.order)	return -1;
+		else						return 0;
 	}
 	
 	override public function update () {
@@ -136,6 +167,7 @@ class Racer extends Screen {
 			if (KeyboardManager.isDown(Keyboard.DOWN))	dy += player.speed;
 			if (KeyboardManager.isDown(Keyboard.LEFT))	dx -= player.speed;
 			if (KeyboardManager.isDown(Keyboard.RIGHT))	dx += player.speed;
+			if (KeyboardManager.isDown(Keyboard.SPACE))	player.dash();
 			player.dx += dx;
 			player.dy += dy;
 			
@@ -175,11 +207,24 @@ class Racer extends Screen {
 				overlay.alpha += 0.005;
 			}
 		}
+		
 		// Update
 		for (e in entities) {
 			e.update();
+			if (Std.is(e, Lobster))	cast(e, Lobster).goForEntity(player);
 		}
+		
+		// Collisions
+		var collEntities = entities.filter(filterCollided);
+		for (i in 0...collEntities.length) {
+			for (j in i+1...collEntities.length) {
+				checkCollisions(collEntities[i], collEntities[j]);
+			}
+		}
+		
+		// Filter dead
 		entities = entities.filter(filterDead);
+		
 		// Camera
 		moveCamera();
 	}
@@ -187,10 +232,42 @@ class Racer extends Screen {
 	function filterDead (e:Entity) :Bool {
 		var dead = e.dead;
 		if (dead) {
-			if (e.sprite != null && e.sprite.parent != null)
+			if (e.sprite != null && e.sprite.parent != null) {
 				e.sprite.parent.removeChild(e.sprite);
+				if (showCol)	e.colSprite.parent.removeChild(e.colSprite);
+			}
 		}
 		return !dead;
+	}
+	
+	function filterCollided (e:Entity) :Bool {
+		return e.collided;
+	}
+	
+	function checkCollisions (e:Entity, f:Entity) {
+		var distX = e.x - f.x;
+		var distY = e.y - f.y;
+		var dist = Math.sqrt(distX * distX + distY * distY);
+		var totalRad = e.radius + f.radius;
+		if (dist < totalRad) {
+			var edx = (e.dx * (e.radius - f.radius) + (2 * f.radius * f.dx)) / totalRad;
+			var edy = (e.dy * (e.radius - f.radius) + (2 * f.radius * f.dy)) / totalRad;
+			var fdx = (f.dx * (f.radius - e.radius) + (2 * e.radius * e.dx)) / totalRad;
+			var fdy = (f.dy * (f.radius - e.radius) + (2 * e.radius * e.dy)) / totalRad;
+			
+			e.dx = edx;
+			e.dy = edy;
+			f.dx = fdx;
+			f.dy = fdy;
+			
+			e.x += e.dx;
+			e.y += e.dy;
+			f.x += f.dx;
+			f.y += f.dy;
+			
+			if (Std.is(e, Shark))	cast(e, Shark).refreshTarget();
+			if (Std.is(f, Shark))	cast(f, Shark).refreshTarget();
+		}
 	}
 	
 	function moveCamera () {

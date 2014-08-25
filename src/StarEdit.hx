@@ -9,58 +9,62 @@ import flash.display.Sprite;
 
 class StarEdit extends Sprite {
 	
-	public var size:Int;
 	public var type:StarType;
 	public var constIndex:Int;
 	
 	public function new () {
 		super();
 		
-		type = StarType.REGULAR;
-		size = Std.random(5) + 1;
+		type = StarType.CHECKPOINT;
 		constIndex = -1;
 		
 		draw();
 	}
 	
-	public function resize (d:Int) {
-		if (d > 0)	size++;
-		else		size--;
-		size = Std.int(Math.min(Math.max(size, 1), 5));
-		draw();
-	}
-	
 	public function cycleType () {
-		var t = switch (type) {
-			case StarType.REGULAR:	StarType.BONUS;
-			case StarType.BONUS:	StarType.START;
-			case StarType.START:	StarType.REGULAR;
+		type = switch (type) {
+			case StarType.CHECKPOINT:	StarType.ASTEROID;
+			case StarType.ASTEROID:		StarType.SHARK;
+			case StarType.SHARK:		StarType.LOBSTER;
+			case StarType.LOBSTER:		StarType.CHECKPOINT;
 		}
-		type = t;
 		draw();
 	}
 	
 	public function draw () {
-		var color = switch (type) {
-			case StarType.REGULAR:	0xFFFFFF;
-			case StarType.BONUS:	0x00FF00;
-			case StarType.START:	0xFF0000;
+		var color = 0xFF00FF;
+		var size = 1;
+		switch (type) {
+			case StarType.CHECKPOINT:
+				color = 0xFFFFFF;
+				size = 1;
+			case StarType.ASTEROID:
+				color = 0xFF0000;
+				size = 2;
+			case StarType.SHARK:
+				color = 0x0000FF;
+				size = 2;
+			case StarType.LOBSTER:
+				color = 0x9900FF;
+				size = 2;
 		}
 		graphics.clear();
-		if (constIndex != -1)	graphics.lineStyle(5, 0xFFCC00);
+		if (constIndex == 0)		graphics.lineStyle(5, 0xFF0000);
+		else if (constIndex != -1)	graphics.lineStyle(5, 0xFFCC00);
 		graphics.beginFill(color);
-		graphics.drawCircle(0, 0, 5 + size * 3);
+		graphics.drawCircle(0, 0, 10 * size);
 		graphics.endFill();
 	}
 	
 	override public function toString () {
-		return x + "," + y + "," + size + "," + type + "," + constIndex;
+		return x + "," + y + "," + type + "," + constIndex;
 	}
 	
 }
 
 enum StarType {
-	REGULAR;
-	BONUS;
-	START;
+	CHECKPOINT;
+	ASTEROID;
+	SHARK;
+	LOBSTER;
 }
