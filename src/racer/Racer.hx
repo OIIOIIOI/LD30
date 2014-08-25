@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
+import Man;
 import racer.Entity.EEntityType;
 import screen.Screen;
 
@@ -53,6 +54,9 @@ class Racer extends Screen {
 	var showCol:Bool;
 	
 	var tick:Int;
+	var cbTimer:Int;
+	var cb:Void->Void;
+	var step:Int;
 	
 	public function new (l:ELevel) {
 		super();
@@ -65,6 +69,8 @@ class Racer extends Screen {
 		
 		tick = 0;
 		shakeTimer = 0;
+		cbTimer = 0;
+		cb = null;
 		
 		entities = new Array();
 		particles = new Array();
@@ -88,7 +94,7 @@ class Racer extends Screen {
 		initMap(level);
 		
 		next = new Next();
-		container.addChild(next.sprite);
+		//container.addChild(next.sprite);
 		if (showCol)	container.addChild(next.colSprite);
 		entities.push(next);
 		
@@ -99,7 +105,7 @@ class Racer extends Screen {
 		if (showCol)	container.addChild(player.colSprite);
 		entities.push(player);
 		
-		container.scaleX = container.scaleY = Const.SCALE;
+		//container.scaleX = container.scaleY = Const.SCALE;
 		addChild(container);
 		
 		cockpit = new Cockpit();
@@ -114,6 +120,26 @@ class Racer extends Screen {
 		container.y = -player.y * Const.SCALE + canvas.height / 2;
 		container.x = Math.max(Math.min(container.x, 0), -(container.width - Const.STAGE_WIDTH));
 		container.y = Math.max(Math.min(container.y, 0), -(container.height - Const.STAGE_HEIGHT));
+		
+		step = 0;
+		cb = startGame;
+		cbTimer = 120;
+	}
+	
+	function startGame () {
+		container.scaleX = container.scaleY = Const.SCALE;
+		container.addChild(next.sprite);
+		
+		container.x = -player.x * Const.SCALE + canvas.width / 2;
+		container.y = -player.y * Const.SCALE + canvas.height / 2;
+		container.x = Math.max(Math.min(container.x, 0), -(container.width - Const.STAGE_WIDTH));
+		container.y = Math.max(Math.min(container.y, 0), -(container.height - Const.STAGE_HEIGHT));
+		
+		step = 1;
+	}
+	
+	function endGame () {
+		Man.ins.changeScreen(EScreen.MENU);
 	}
 	
 	public function initMap (l:ELevel) {
@@ -199,7 +225,12 @@ class Racer extends Screen {
 		tick++;
 		if (tick == 100000)	tick = 0;
 		
-		if (!raceComplete) {
+		if (cbTimer > 0) {
+			cbTimer--;
+			if (cbTimer == 0 && cb != null)	cb();
+		}
+		
+		if (!raceComplete && step > 0) {
 			// Controls
 			var dx = 0.0;
 			var dy = 0.0;
@@ -248,9 +279,12 @@ class Racer extends Screen {
 					player.dead = true;
 				}
 			}
-		} else {
+		} else if (raceComplete) {
 			if (overlay.alpha < 0.4) {
 				overlay.alpha += 0.005;
+			} else if (cbTimer == 0) {
+				cb = endGame;
+				cbTimer = 120;
 			}
 		}
 		

@@ -46,7 +46,6 @@ class MenuScreen extends Screen {
 	
 	public function new () {
 		super();
-		Font.registerFont(AudioWideFont);
 		
 		snpShtIndex = 0;
 		//------------------------
