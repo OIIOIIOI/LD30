@@ -23,4 +23,8 @@ class Checkpoint extends Entity {
 		sprite.graphics.endFill();
 	}
 	
+	public function toString () {
+		return x + ", " + y;
+	}
+	
 }

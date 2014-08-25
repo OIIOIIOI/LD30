@@ -22,6 +22,7 @@ class Racer extends Screen {
 	var next:Next;
 	var checkpoints:Array<Checkpoint>;
 	var targetCP:Int;
+	var paths:Sprite;
 	var raceComplete:Bool;
 	
 	public function new () {
@@ -33,6 +34,9 @@ class Racer extends Screen {
 		
 		canvas = new Bitmap(new SharkBG(900, 610));
 		container.addChild(canvas);
+		
+		paths = new Sprite();
+		container.addChild(paths);
 		
 		initMap();
 		
@@ -66,50 +70,67 @@ class Racer extends Screen {
 	}
 	
 	override public function update () {
-		if (raceComplete)	return;
-		
 		super.update();
 		
-		// Controls
-		var dx = 0.0;
-		var dy = 0.0;
-		if (KeyboardManager.isDown(Keyboard.UP))	dy -= player.speed;
-		if (KeyboardManager.isDown(Keyboard.DOWN))	dy += player.speed;
-		if (KeyboardManager.isDown(Keyboard.LEFT))	dx -= player.speed;
-		if (KeyboardManager.isDown(Keyboard.RIGHT))	dx += player.speed;
-		player.dx += dx;
-		player.dy += dy;
-		
-		// Next
-		next.x = checkpoints[targetCP].x;
-		if (next.x < -container.x / 2)
-			next.x = checkpoints[targetCP].x - container.x / 2 - next.x;
-		if (next.x > -container.x / 2 + Const.STAGE_WIDTH / 2)
-			next.x = checkpoints[targetCP].x - container.x / 2 + Const.STAGE_WIDTH / 2 - next.x;
-		next.y = checkpoints[targetCP].y;
-		if (next.y < -container.y / 2)
-			next.y = checkpoints[targetCP].y - container.y / 2 - next.y;
-		if (next.y > -container.y / 2 + Const.STAGE_HEIGHT / 2)
-			next.y = checkpoints[targetCP].y - container.y / 2 + Const.STAGE_HEIGHT / 2 - next.y;
-		
+		if (!raceComplete) {
+			// Controls
+			var dx = 0.0;
+			var dy = 0.0;
+			if (KeyboardManager.isDown(Keyboard.UP))	dy -= player.speed;
+			if (KeyboardManager.isDown(Keyboard.DOWN))	dy += player.speed;
+			if (KeyboardManager.isDown(Keyboard.LEFT))	dx -= player.speed;
+			if (KeyboardManager.isDown(Keyboard.RIGHT))	dx += player.speed;
+			player.dx += dx;
+			player.dy += dy;
+			
+			// Next
+			next.x = checkpoints[targetCP].x;
+			if (next.x < -container.x / 2)
+				next.x = checkpoints[targetCP].x - container.x / 2 - next.x;
+			if (next.x > -container.x / 2 + Const.STAGE_WIDTH / 2)
+				next.x = checkpoints[targetCP].x - container.x / 2 + Const.STAGE_WIDTH / 2 - next.x;
+			next.y = checkpoints[targetCP].y;
+			if (next.y < -container.y / 2)
+				next.y = checkpoints[targetCP].y - container.y / 2 - next.y;
+			if (next.y > -container.y / 2 + Const.STAGE_HEIGHT / 2)
+				next.y = checkpoints[targetCP].y - container.y / 2 + Const.STAGE_HEIGHT / 2 - next.y;
+			
+			// Capture point
+			var dx = player.x - checkpoints[targetCP].x;
+			var dy = player.y - checkpoints[targetCP].y;
+			var dist = Math.sqrt(dx * dx + dy * dy);
+			if (dist < player.radius + checkpoints[targetCP].radius / 2) {
+				if (targetCP > 0) {
+					paths.graphics.lineStyle(1, 0xFFFFFF);
+					paths.graphics.moveTo(checkpoints[targetCP-1].x, checkpoints[targetCP-1].y);
+					paths.graphics.lineTo(checkpoints[targetCP].x, checkpoints[targetCP].y);
+				}
+				targetCP++;
+				if (targetCP == checkpoints.length) {
+					raceComplete = true;
+					container.x = container.y = 0;
+					container.scaleX = container.scaleY = 1;
+					next.dead = true;
+					player.dead = true;
+				}
+			}
+		}
 		// Update
 		for (e in entities) {
 			e.update();
 		}
+		entities = entities.filter(filterDead);
 		// Camera
 		moveCamera();
-		
-		// Capture point
-		var dx = player.x - checkpoints[targetCP].x;
-		var dy = player.y - checkpoints[targetCP].y;
-		var dist = Math.sqrt(dx * dx + dy * dy);
-		if (dist < player.radius + checkpoints[targetCP].radius / 2) {
-			targetCP++;
-			if (targetCP == checkpoints.length) {
-				trace("DONE");
-				raceComplete = true;
-			}
+	}
+	
+	function filterDead (e:Entity) :Bool {
+		var dead = e.dead;
+		if (dead) {
+			if (e.sprite != null && e.sprite.parent != null)
+				e.sprite.parent.removeChild(e.sprite);
 		}
+		return !dead;
 	}
 	
 	function moveCamera () {
