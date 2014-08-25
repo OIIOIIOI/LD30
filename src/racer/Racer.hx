@@ -63,15 +63,15 @@ class Racer extends Screen {
 		paths = new Sprite();
 		container.addChild(paths);
 		
-		initMap(ELevel.LShark);
+		initMap(ELevel.LSeagull);
 		
 		next = new Next();
 		container.addChild(next.sprite);
 		entities.push(next);
 		
 		player = new Player();
-		player.x = Const.STAGE_WIDTH / 2;
-		player.y = Const.STAGE_HEIGHT / 2;
+		player.x = checkpoints[targetCP].x;
+		player.y = checkpoints[targetCP].y;
 		container.addChild(player.sprite);
 		entities.push(player);
 		
@@ -124,25 +124,6 @@ class Racer extends Screen {
 		}
 		targetCP = 0;
 		raceComplete = false;
-		
-		var a:Entity;
-		a = new Asteroid();
-		a.x = Std.random(Const.STAGE_WIDTH);
-		a.y = Std.random(Const.STAGE_HEIGHT);
-		container.addChild(a.sprite);
-		entities.push(a);
-		
-		a = new Shark();
-		a.x = Std.random(Const.STAGE_WIDTH);
-		a.y = Std.random(Const.STAGE_HEIGHT);
-		container.addChild(a.sprite);
-		entities.push(a);
-		
-		a = new Lobster();
-		a.x = Std.random(Const.STAGE_WIDTH);
-		a.y = Std.random(Const.STAGE_HEIGHT);
-		container.addChild(a.sprite);
-		entities.push(a);
 	}
 	
 	override public function update () {
