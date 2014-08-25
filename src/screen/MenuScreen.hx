@@ -27,7 +27,7 @@ import Man;
 
 @:bitmap("assets/img/ship_2.png") class ShipBmp extends BitmapData { }
 
-@:font("Assets/font/Audiowide-Regular.ttf") class AudioWideFont extends Font { }
+@:font("assets/font/Audiowide-Regular.ttf") class AudioWideFont extends Font { }
 
 class MenuScreen extends Screen {
 	var startBtn :MenuBtn;
@@ -41,6 +41,8 @@ class MenuScreen extends Screen {
 	
 	public function new () {
 		super();
+		Font.registerFont(AudioWideFont);
+		
 		snpShtIndex = 0;
 		//------------------------
 		startBtn = new MenuBtn(Start,startClicked);
@@ -54,6 +56,7 @@ class MenuScreen extends Screen {
 		this.addChild(lvlSnpSht);
 		//-----------------------------
 		constellName = new TextField();
+		constellName.embedFonts = true;
 		constellName.width = 400;
 		constellName.height = 30;
 		constellName.x = 90;
@@ -76,9 +79,9 @@ class MenuScreen extends Screen {
 		KeyboardManager.setCallback(39,rightSnpShtChange);
 		KeyboardManager.setCallback(13,startClicked);
 	}
+	
 	override public function kill ()  {
 		super.kill();
-		testBtn.kill();
 		startBtn.kill();
 		for (i in 0...5) {
 			snpShtBmps[i].dispose();
@@ -87,10 +90,24 @@ class MenuScreen extends Screen {
 		KeyboardManager.deleteCallback(37);
 		KeyboardManager.deleteCallback(39);
 	}
+	
 	function startClicked() {
-		//Man.ins.changeScreen(EScreen.RACER);
-		startBtn.kill();
+		switch (snpShtIndex) {
+			case 0:		Man.ins.changeScreen(EScreen.RACER_BELUGA);
+			case 1:		Man.ins.changeScreen(EScreen.RACER_OTTER);
+			case 2:		Man.ins.changeScreen(EScreen.RACER_WALRUS);
+			case 3:		Man.ins.changeScreen(EScreen.RACER_RUSTY);
+			case 4:		Man.ins.changeScreen(EScreen.RACER_BOAT);
+			case 5:		Man.ins.changeScreen(EScreen.RACER_SEAGULL);
+			case 6:		Man.ins.changeScreen(EScreen.RACER_EEL);
+			case 7:		Man.ins.changeScreen(EScreen.RACER_CLAM);
+			case 8:		Man.ins.changeScreen(EScreen.RACER_SHARK);
+			case 9:		Man.ins.changeScreen(EScreen.RACER_SPLIFF);
+			case 10:	Man.ins.changeScreen(EScreen.RACER_JELLYFISH);
+			case 11:	Man.ins.changeScreen(EScreen.RACER_SQUID);
+		}
 	}
+	
 	function leftSnpShtChange() {
 		snpShtIndex --;
 		if (snpShtIndex < 0) {

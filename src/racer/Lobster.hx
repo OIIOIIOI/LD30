@@ -14,7 +14,7 @@ class Lobster extends Entity {
 	public function new () {
 		super();
 		
-		speed = 10;
+		speed = 8;
 		friction = 0.95;
 		radius = 15*scale;
 		offset.x = 3*scale;
@@ -35,7 +35,10 @@ class Lobster extends Entity {
 	}
 	
 	public function goForEntity (e:Entity) {
-		if (dx != 0 || dy != 0)	return;
+		if (dx != 0 || dy != 0) {
+			sprite.bitmapData = SpriteSheet.ins.getTile("lobster2");
+			return;
+		}
 		
 		var distX = x - e.x;
 		var distY = y - e.y;
@@ -45,6 +48,12 @@ class Lobster extends Entity {
 			dx = Math.cos(a) * speed;
 			dy = Math.sin(a) * speed;
 		}
+	}
+	
+	public function hurt () {
+		animIndex = 2;
+		sprite.bitmapData = SpriteSheet.ins.getTile("lobster" + animIndex);
+		animDelay = 30;
 	}
 	
 	override function nextFrame ()  {

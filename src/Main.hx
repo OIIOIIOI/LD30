@@ -24,7 +24,7 @@ class Main {
 		KeyboardManager.init(Lib.current.stage);
 		new Man();
 		
-		Man.ins.changeScreen(EScreen.RACER);
+		Man.ins.changeScreen(EScreen.MENU);
 		
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, update);
 	}

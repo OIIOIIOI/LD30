@@ -32,6 +32,8 @@ import screen.Screen;
 
 class Racer extends Screen {
 	
+	var level:ELevel;
+	
 	var entities:Array<Entity>;
 	var particles:Array<Particle>;
 	var container:Sprite;
@@ -43,15 +45,18 @@ class Racer extends Screen {
 	var targetCP:Int;
 	var paths:Sprite;
 	var raceComplete:Bool;
+	var cockpit:Cockpit;
 	
 	var showCol:Bool;
 	
 	var tick:Int;
 	
-	public function new () {
+	public function new (l:ELevel) {
 		super();
 		
-		new SpriteSheet();
+		level = l;
+		
+		if (SpriteSheet.ins == null)	new SpriteSheet();
 		
 		showCol = false;
 		
@@ -76,7 +81,7 @@ class Racer extends Screen {
 		paths = new Sprite();
 		container.addChild(paths);
 		
-		initMap(ELevel.LWalrus);
+		initMap(level);
 		
 		next = new Next();
 		container.addChild(next.sprite);
@@ -92,6 +97,12 @@ class Racer extends Screen {
 		
 		container.scaleX = container.scaleY = Const.SCALE;
 		addChild(container);
+		
+		cockpit = new Cockpit();
+		cockpit.x = Const.STAGE_WIDTH - cockpit.sprite.width / 2;
+		cockpit.y = Const.STAGE_HEIGHT - cockpit.sprite.height / 2;
+		addChild(cockpit.sprite);
+		entities.push(cockpit);
 		
 		container.x = -player.x * Const.SCALE + canvas.width / 2;
 		container.y = -player.y * Const.SCALE + canvas.height / 2;
@@ -163,6 +174,8 @@ class Racer extends Screen {
 		}
 		
 		checkpoints.sort(sortCP);
+		
+		//trace(checkpoints.length);
 		
 		targetCP = 0;
 		raceComplete = false;
@@ -300,6 +313,7 @@ class Racer extends Screen {
 			
 			if (Std.is(e, Shark))	cast(e, Shark).refreshTarget();
 			if (Std.is(f, Shark))	cast(f, Shark).refreshTarget();
+			if (Std.is(e, Player) || Std.is(f, Player))	cockpit.hurt();
 		}
 	}
 	

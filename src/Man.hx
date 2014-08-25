@@ -35,9 +35,19 @@ class Man {
 		// Set up new screen
 		//trace("CREATE " + e);
 		curScr = switch (e) {
-			case EScreen.MENU:			new MenuScreen();
-			case EScreen.SHOOTER:		new Shooter();
-			case EScreen.RACER:			new Racer();
+			case EScreen.MENU:				new MenuScreen();
+			case EScreen.RACER_BELUGA:		new Racer(ELevel.LBeluga);
+			case EScreen.RACER_BOAT:		new Racer(ELevel.LBoat);
+			case EScreen.RACER_CLAM:		new Racer(ELevel.LClam);
+			case EScreen.RACER_EEL:			new Racer(ELevel.LEel);
+			case EScreen.RACER_JELLYFISH:	new Racer(ELevel.LJellyfish);
+			case EScreen.RACER_OTTER:		new Racer(ELevel.LOtter);
+			case EScreen.RACER_RUSTY:		new Racer(ELevel.LRusty);
+			case EScreen.RACER_SEAGULL:		new Racer(ELevel.LSeagull);
+			case EScreen.RACER_SHARK:		new Racer(ELevel.LShark);
+			case EScreen.RACER_SPLIFF:		new Racer(ELevel.LSpliff);
+			case EScreen.RACER_SQUID:		new Racer(ELevel.LSquid);
+			case EScreen.RACER_WALRUS:		new Racer(ELevel.LWalrus);
 		}
 		Lib.current.stage.addChild(curScr);
 		curEScr = e;
@@ -53,6 +63,16 @@ class Man {
 
 enum EScreen {
 	MENU;
-	SHOOTER;
-	RACER;
+	RACER_BELUGA;
+	RACER_BOAT;
+	RACER_CLAM;
+	RACER_EEL;
+	RACER_JELLYFISH;
+	RACER_OTTER;
+	RACER_RUSTY;
+	RACER_SEAGULL;
+	RACER_SHARK;
+	RACER_SPLIFF;
+	RACER_SQUID;
+	RACER_WALRUS;
 }
