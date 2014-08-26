@@ -4,6 +4,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.text.Font;
 import flash.text.TextField;
+import flash.text.TextFieldType;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import screen.Screen;
@@ -48,6 +49,8 @@ class MenuScreen extends Screen {
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
 	var lvlCounter :TextField;
+	
+	var pseudoTF:TextField;
 	
 	public function new () {
 		super();
@@ -141,6 +144,23 @@ class MenuScreen extends Screen {
 		openPod.scaleX = 0.8;
 		openPod.scaleY = 0.8;
 		addChild(openPod);
+		//
+		
+		pseudoTF = new TextField();
+		pseudoTF.type = TextFieldType.INPUT;
+		pseudoTF.background = true;
+		pseudoTF.backgroundColor = 0x666666;
+		var format = new TextFormat("Arial", 32, 0xFFFFFF);
+		format.align = TextFormatAlign.CENTER;
+		pseudoTF.defaultTextFormat = format;
+		pseudoTF.width = 400;
+		pseudoTF.height = 45;
+		pseudoTF.text = Main.pseudo;
+		pseudoTF.x = (Const.STAGE_WIDTH - pseudoTF.width) / 2;
+		pseudoTF.y = 30;
+		pseudoTF.restrict = "a-z A-Z 0-9";
+		addChild(pseudoTF);
+		
 		//-------------------------------------
 		KeyboardManager.setCallback(37,leftSnpShtChange);
 		KeyboardManager.setCallback(39,rightSnpShtChange);
@@ -152,7 +172,7 @@ class MenuScreen extends Screen {
 		startBtn.kill();
 		lftBtn.kill();
 		rghtBtn.kill();
-		snpShtIndex = null;
+		snpShtIndex = 0;
 		for (i in 0...5) {
 			snpShtBmps[i].dispose();
 		}
@@ -163,6 +183,7 @@ class MenuScreen extends Screen {
 	}
 	
 	function startClicked() {
+		Main.pseudo = pseudoTF.text;
 		SoundMan.ins.playSFX("click");
 		switch (snpShtIndex) {
 			case 0:		Man.ins.changeScreen(EScreen.RACER_BELUGA);
@@ -181,6 +202,7 @@ class MenuScreen extends Screen {
 	}
 	
 	function leftSnpShtChange() {
+		SoundMan.ins.playSFX("click");
 		snpShtIndex --;
 		if (snpShtIndex < 0) {
 			snpShtIndex = 0;
@@ -201,6 +223,7 @@ class MenuScreen extends Screen {
 		}
 	}
 	function rightSnpShtChange() {
+		SoundMan.ins.playSFX("click");
 		snpShtIndex ++;
 		if (snpShtIndex > snpShtBmps.length-1) {
 			snpShtIndex = snpShtBmps.length-1;

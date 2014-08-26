@@ -19,7 +19,7 @@ class Checkpoint extends Entity {
 		order = o;
 		version = Std.random(8);
 		
-		radius = 10*scale;
+		radius = 14*scale;
 		
 		sprite = new Bitmap(SpriteSheet.ins.getTile("starOff"));
 		sprite.scaleX = sprite.scaleY = scale;

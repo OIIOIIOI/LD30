@@ -83,9 +83,6 @@ class SoundMan {
 		sfx.set("shark", new SharkHitSFX());
 		sfx.set("asteroid", new AsteroidHitSFX());
 		sfx.set("click", new ClickSFX());
-		
-		startAll();
-		setActive();
 	}
 	
 	public function startAll () {
@@ -165,6 +162,7 @@ class SoundMan {
 	}
 	
 	public function update () {
+		if (mainChanA == null || mainChanB == null)	return;
 		if ((lastStartedA && mainChanA.position >= 113624) || (!lastStartedA && mainChanB.position >= 113624)) {
 			startAll();
 		}

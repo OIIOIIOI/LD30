@@ -27,6 +27,9 @@ class TitleScreen extends Screen
 		startBtn.scaleX = 0.5;
 		startBtn.scaleY = 0.5;
 		addChild(startBtn);
+		
+		SoundMan.ins.startAll();
+		SoundMan.ins.setActive();
 	}
 	private function gotoLvlSelect() {
 		SoundMan.ins.playSFX("click");

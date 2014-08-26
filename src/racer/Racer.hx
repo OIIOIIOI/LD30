@@ -165,7 +165,7 @@ class Racer extends Screen {
 	}
 	
 	function endGame () {
-		ScoreManager.save(level.getName(), (endTime - startTime), "01101101");
+		ScoreManager.save(level.getName(), (endTime - startTime), Main.pseudo);
 		SoundMan.ins.setActive(-1);
 		Man.ins.changeScreen(EScreen.MENU);
 	}

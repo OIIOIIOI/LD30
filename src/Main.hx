@@ -17,6 +17,8 @@ import Man;
 
 class Main {
 	
+	static public var pseudo:String = "YourName";
+	
 	static function main () {
 		var stage = Lib.current.stage;
 		stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -30,7 +32,7 @@ class Main {
 		new SoundMan();
 		
 		new Man();
-		Man.ins.changeScreen(EScreen.TITLE);
+		Man.ins.changeScreen(EScreen.INTRO);
 		
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, update);
 	}
