@@ -65,12 +65,10 @@ class MenuScreen extends Screen {
 		lftBtn = new MenuBtn(Left, leftSnpShtChange);
 		lftBtn.x = 140;
 		lftBtn.y = 490;
-		addChild(lftBtn);
 		//--------------------------
 		rghtBtn = new MenuBtn(Right, rightSnpShtChange);
 		rghtBtn.x = 390;
 		rghtBtn.y = 490;
-		addChild(rghtBtn);
 		//--------------------------
 		lvlSnpSht.bitmapData = snpShtBmps[0];
 		lvlSnpSht.x = 172;
@@ -160,6 +158,9 @@ class MenuScreen extends Screen {
 		pseudoTF.y = 30;
 		pseudoTF.restrict = "a-z A-Z 0-9";
 		addChild(pseudoTF);
+		
+		addChild(lftBtn);
+		addChild(rghtBtn);
 		
 		//-------------------------------------
 		KeyboardManager.setCallback(37,leftSnpShtChange);
