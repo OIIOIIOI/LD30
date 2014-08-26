@@ -4,6 +4,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.Lib;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.ui.Keyboard;
@@ -148,6 +149,8 @@ class Racer extends Screen {
 	}
 	
 	function startGame () {
+		Lib.current.stage.focus = null;
+		
 		container.scaleX = container.scaleY = Const.SCALE;
 		container.addChild(next.sprite);
 		
