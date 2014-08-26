@@ -41,6 +41,7 @@ class MenuBtn extends Sprite
 			default:
 		}
 		this.addEventListener(MouseEvent.CLICK, execute);
+		buttonMode = true;
 	}
 	
 	private function execute(e:MouseEvent):Void 
