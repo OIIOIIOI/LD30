@@ -150,12 +150,16 @@ class MenuScreen extends Screen {
 	override public function kill ()  {
 		super.kill();
 		startBtn.kill();
+		lftBtn.kill();
+		rghtBtn.kill();
+		snpShtIndex = null;
 		for (i in 0...5) {
 			snpShtBmps[i].dispose();
 		}
 		lvlSnpSht = null;
 		KeyboardManager.deleteCallback(37);
 		KeyboardManager.deleteCallback(39);
+		KeyboardManager.deleteCallback(13);
 	}
 	
 	function startClicked() {
