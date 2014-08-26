@@ -59,16 +59,6 @@ class MenuScreen extends Screen {
 		startBtn.y = 400;
 		addChild(startBtn);
 		//--------------------------
-		lftBtn = new MenuBtn(Left, leftSnpShtChange);
-		lftBtn.x = 140;
-		lftBtn.y = 490;
-		addChild(lftBtn);
-		//--------------------------
-		rghtBtn = new MenuBtn(Right, rightSnpShtChange);
-		rghtBtn.x = 390;
-		rghtBtn.y = 490;
-		addChild(rghtBtn);
-		//--------------------------
 		lvlSnpSht.bitmapData = snpShtBmps[0];
 		lvlSnpSht.x = 172;
 		lvlSnpSht.y = 180;
@@ -141,6 +131,16 @@ class MenuScreen extends Screen {
 		openPod.scaleX = 0.8;
 		openPod.scaleY = 0.8;
 		addChild(openPod);
+		//--------------------------
+		lftBtn = new MenuBtn(Left,leftSnpShtChange);
+		lftBtn.x = 140;
+		lftBtn.y = 490;
+		addChild(lftBtn);
+		//--------------------------
+		rghtBtn = new MenuBtn(Right,rightSnpShtChange);
+		rghtBtn.x = 390;
+		rghtBtn.y = 490;
+		addChild(rghtBtn);
 		//-------------------------------------
 		KeyboardManager.setCallback(37,leftSnpShtChange);
 		KeyboardManager.setCallback(39,rightSnpShtChange);
@@ -152,7 +152,7 @@ class MenuScreen extends Screen {
 		startBtn.kill();
 		lftBtn.kill();
 		rghtBtn.kill();
-		snpShtIndex = null;
+		snpShtIndex = 0;
 		for (i in 0...5) {
 			snpShtBmps[i].dispose();
 		}
