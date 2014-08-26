@@ -36,6 +36,7 @@ class Main {
 	}
 	
 	static function update (e:Event) {
+		SoundMan.ins.update();
 		Man.ins.update();
 	}
 	

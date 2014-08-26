@@ -4,7 +4,11 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
+import flash.text.TextField;
+import flash.text.TextFormat;
 import flash.ui.Keyboard;
+import haxe.Timer;
+import Main;
 import Man;
 import racer.Entity.EEntityType;
 import screen.Screen;
@@ -57,6 +61,11 @@ class Racer extends Screen {
 	var cbTimer:Int;
 	var cb:Void->Void;
 	var step:Int;
+	
+	var startTime:Float;
+	var endTime:Float;
+	var timeTF:TextField;
+	var timerFont:RadioLandFont;
 	
 	public function new (l:ELevel) {
 		super();
@@ -121,9 +130,21 @@ class Racer extends Screen {
 		container.x = Math.max(Math.min(container.x, 0), -(container.width - Const.STAGE_WIDTH));
 		container.y = Math.max(Math.min(container.y, 0), -(container.height - Const.STAGE_HEIGHT));
 		
+		timerFont = new RadioLandFont();
+		timeTF = new TextField();
+		timeTF.embedFonts = true;
+		timeTF.defaultTextFormat = new TextFormat(timerFont.fontName, 36, 0xFFFFFF);
+		timeTF.selectable = false;
+		timeTF.width = 200;
+		timeTF.height = 60;
+		timeTF.x = 10;
+		timeTF.y = Const.STAGE_HEIGHT - timeTF.height;
+		
 		step = 0;
 		cb = startGame;
 		cbTimer = 120;
+		
+		SoundMan.ins.playSFX("start");
 	}
 	
 	function startGame () {
@@ -137,10 +158,14 @@ class Racer extends Screen {
 		
 		step = 1;
 		
-		SoundMan.ins.setActive(-1);
+		startTime = Timer.stamp();
+		addChild(timeTF);
+		
+		SoundMan.ins.setActive( -1);
 	}
 	
 	function endGame () {
+		ScoreManager.save(level.getName(), (endTime - startTime), "01101101");
 		SoundMan.ins.setActive(-1);
 		Man.ins.changeScreen(EScreen.MENU);
 	}
@@ -234,6 +259,8 @@ class Racer extends Screen {
 		}
 		
 		if (!raceComplete && step > 0) {
+			var time = Std.int((Timer.stamp() - startTime) * 100) / 100;
+			timeTF.text = time + "s";
 			// Controls
 			var dx = 0.0;
 			var dy = 0.0;
@@ -264,7 +291,6 @@ class Racer extends Screen {
 			if (dist < player.radius + checkpoints[targetCP].radius / 2) {
 				// Turn star on
 				SoundMan.ins.setActive(SoundMan.ins.active+1);
-				SoundMan.ins.playSFX("star");
 				checkpoints[targetCP].turnOn();
 				for (i in 0...targetCP+1) {
 					starParticles(checkpoints[i]);
@@ -277,12 +303,16 @@ class Racer extends Screen {
 				}
 				targetCP++;
 				if (targetCP == checkpoints.length) {
+					endTime = Timer.stamp();
 					raceComplete = true;
 					container.x = container.y = 0;
 					container.scaleX = container.scaleY = 1;
 					next.dead = true;
 					player.dead = true;
 					killAll();
+					SoundMan.ins.playSFX("complete");
+				} else {
+					SoundMan.ins.playSFX("star");
 				}
 			}
 		} else if (raceComplete) {
@@ -376,6 +406,9 @@ class Racer extends Screen {
 			if (Std.is(e, Shark))	cast(e, Shark).refreshTarget();
 			if (Std.is(f, Shark))	cast(f, Shark).refreshTarget();
 			if (Std.is(e, Player) || Std.is(f, Player)) {
+				if (Std.is(e, Lobster) || Std.is(f, Lobster))			SoundMan.ins.playSFX("lobster");
+				else if (Std.is(e, Shark) || Std.is(f, Shark))			SoundMan.ins.playSFX("shark");
+				else if (Std.is(e, Asteroid) || Std.is(f, Asteroid))	SoundMan.ins.playSFX("asteroid");
 				cockpit.hurt();
 				shakeTimer = 15;
 				SoundMan.ins.setActive(Std.int(Math.max(0, SoundMan.ins.active-1)));

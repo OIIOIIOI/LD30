@@ -163,6 +163,7 @@ class MenuScreen extends Screen {
 	}
 	
 	function startClicked() {
+		SoundMan.ins.playSFX("click");
 		switch (snpShtIndex) {
 			case 0:		Man.ins.changeScreen(EScreen.RACER_BELUGA);
 			case 1:		Man.ins.changeScreen(EScreen.RACER_OTTER);

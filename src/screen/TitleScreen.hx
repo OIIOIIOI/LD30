@@ -29,6 +29,7 @@ class TitleScreen extends Screen
 		addChild(startBtn);
 	}
 	private function gotoLvlSelect() {
+		SoundMan.ins.playSFX("click");
 		kill();
 		Man.ins.changeScreen(EScreen.MENU);
 	}

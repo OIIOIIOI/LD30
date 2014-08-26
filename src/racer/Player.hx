@@ -47,6 +47,7 @@ class Player extends Entity {
 		dx *= 4;
 		dy *= 4;
 		dashTimer = DASH_DELAY;
+		SoundMan.ins.playSFX("dash");
 	}
 	
 	override function nextFrame ()  {

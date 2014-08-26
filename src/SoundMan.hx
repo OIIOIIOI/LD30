@@ -17,7 +17,14 @@ import flash.media.SoundTransform;
 @:sound("assets/snd/Tona 03 master.mp3") class Tona3Snd extends Sound { }
 @:sound("assets/snd/Tona 04 master.mp3") class Tona4Snd extends Sound { }
 @:sound("assets/snd/Tona 05 master.mp3") class Tona5Snd extends Sound { }
-//@:sound() class StarSFX extends Sound { }
+@:sound("assets/sfx/start.mp3") class StartSFX extends Sound { }
+@:sound("assets/sfx/capture.mp3") class StarSFX extends Sound { }
+@:sound("assets/sfx/complete.mp3") class LastStarSFX extends Sound { }
+@:sound("assets/sfx/dash.mp3") class DashSFX extends Sound { }
+@:sound("assets/sfx/sfxhitcrabe.mp3") class LobsterHitSFX extends Sound { }
+@:sound("assets/sfx/sfxhitshark.mp3") class SharkHitSFX extends Sound { }
+@:sound("assets/sfx/sfxhitastero.mp3") class AsteroidHitSFX extends Sound { }
+@:sound("assets/sfx/clik.mp3") class ClickSFX extends Sound { }
  
 class SoundMan {
 	
@@ -68,7 +75,14 @@ class SoundMan {
 		tona5Snd = new Tona5Snd();
 		
 		sfx = new Map();
-		//sfx.set("star", new StarSFX());
+		sfx.set("start", new StartSFX());
+		sfx.set("star", new StarSFX());
+		sfx.set("complete", new LastStarSFX());
+		sfx.set("dash", new DashSFX());
+		sfx.set("lobster", new LobsterHitSFX());
+		sfx.set("shark", new SharkHitSFX());
+		sfx.set("asteroid", new AsteroidHitSFX());
+		sfx.set("click", new ClickSFX());
 		
 		startAll();
 		setActive();
