@@ -44,7 +44,7 @@ class MenuScreen extends Screen {
 	var nextSnpSht2 = new Bitmap();
 	var snpShtBmps: Array<BitmapData> = [new C_belugaBitmap(275,186),new C_otterBitmap(275,186),new C_walrusBitmap(275,186),new C_rustyBitmap(275,186),new C_boatBitmap(275,186),new C_seagullBitmap(275,186),new C_eelBitmap(275,186),new C_clamBitmap(275,186),new C_sharkBitmap(275,186),new C_spliffBitmap(275,186),new C_jellyfishBitmap(275,186),new C_squidBitmap(275,186)];
 	var snpShtLabel: Array<String> = ["Bebop Beluga", "One-eyed Otter", "Toothless Walrus", "Rusty Tuna Can", "Rainbow Tanker", "Seven Seagull", "Golden Eel", "Drunken Clam", "Neurasthenic Shark", "Sea Weed Spliff", "Jealous Jellyfish", "Kinky Squid"];
-	public var discovered :Array<Bool> = [true,true,true,true,true,true,true,true,true,true,true,true];//[false,false,false,false,false,false,false,false,false,false,false,false];
+	public var discovered :Array<Bool> = [false, false, false, false, false, false, false, false, false, false, false, false];
 	var snpShtIndex : Int;
 	var constellName:TextField;
 	var audioWideFont:Font = new AudioWideFont();
