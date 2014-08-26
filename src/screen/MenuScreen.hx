@@ -106,6 +106,7 @@ class MenuScreen extends Screen {
 		//-----------------------------
 		constellName = new TextField();
 		constellName.embedFonts = true;
+		constellName.selectable = false;
 		constellName.width = 400;
 		constellName.height = 30;
 		constellName.x = 90;
@@ -123,6 +124,7 @@ class MenuScreen extends Screen {
 		//-------------------------------
 		lvlCounter = new TextField();
 		lvlCounter.embedFonts = true;
+		lvlCounter.selectable = false;
 		lvlCounter.width =  400;
 		lvlCounter.x = 90;
 		lvlCounter.y = 500;
