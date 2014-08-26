@@ -106,6 +106,7 @@ class SoundMan {
 			tona5ChanB = tona5Snd.play(46);
 		}
 		lastStartedA = !lastStartedA;
+		//trace(lastStartedA);
 		
 		applyActive();
 	}
@@ -130,40 +131,68 @@ class SoundMan {
 	}
 	
 	public function killAll (e:Event) {
-		if (e.currentTarget == mainChanA) {
-			//trace("kill A");
-			mainChanA.stop();
+		if (e == null) {
+			//trace("kill all");
+			if (mainChanA != null) mainChanA.stop();
 			mainChanA = null;
-			tona1ChanA.stop();
+			if (tona1ChanA != null) tona1ChanA.stop();
 			tona1ChanA = null;
-			tona2ChanA.stop();
+			if (tona2ChanA != null) tona2ChanA.stop();
 			tona2ChanA = null;
-			tona3ChanA.stop();
+			if (tona3ChanA != null) tona3ChanA.stop();
 			tona3ChanA = null;
-			tona4ChanA.stop();
+			if (tona4ChanA != null) tona4ChanA.stop();
 			tona4ChanA = null;
-			tona5ChanA.stop();
+			if (tona5ChanA != null) tona5ChanA.stop();
 			tona5ChanA = null;
-		} else {
-			//trace("kill B");
-			mainChanB.stop();
+			if (mainChanB != null) mainChanB.stop();
 			mainChanB = null;
-			tona1ChanB.stop();
+			if (tona1ChanB != null) tona1ChanB.stop();
 			tona1ChanB = null;
-			tona2ChanB.stop();
+			if (tona2ChanB != null) tona2ChanB.stop();
 			tona2ChanB = null;
-			tona3ChanB.stop();
+			if (tona3ChanB != null) tona3ChanB.stop();
 			tona3ChanB = null;
-			tona4ChanB.stop();
+			if (tona4ChanB != null) tona4ChanB.stop();
 			tona4ChanB = null;
-			tona5ChanB.stop();
+			if (tona5ChanB != null) tona5ChanB.stop();
+			tona5ChanB = null;
+		}
+		else if (e.currentTarget == mainChanA) {
+			//trace("kill A");
+			
+			if (mainChanA != null) mainChanA.stop();
+			mainChanA = null;
+			if (tona1ChanA != null) tona1ChanA.stop();
+			tona1ChanA = null;
+			if (tona2ChanA != null) tona2ChanA.stop();
+			tona2ChanA = null;
+			if (tona3ChanA != null) tona3ChanA.stop();
+			tona3ChanA = null;
+			if (tona4ChanA != null) tona4ChanA.stop();
+			tona4ChanA = null;
+			if (tona5ChanA != null) tona5ChanA.stop();
+			tona5ChanA = null;
+		} else if (e.currentTarget == mainChanB) {
+			//trace("kill B");
+			if (mainChanB != null) mainChanB.stop();
+			mainChanB = null;
+			if (tona1ChanB != null) tona1ChanB.stop();
+			tona1ChanB = null;
+			if (tona2ChanB != null) tona2ChanB.stop();
+			tona2ChanB = null;
+			if (tona3ChanB != null) tona3ChanB.stop();
+			tona3ChanB = null;
+			if (tona4ChanB != null) tona4ChanB.stop();
+			tona4ChanB = null;
+			if (tona5ChanB != null) tona5ChanB.stop();
 			tona5ChanB = null;
 		}
 	}
 	
 	public function update () {
-		if (mainChanA == null || mainChanB == null)	return;
-		if ((lastStartedA && mainChanA.position >= 113624) || (!lastStartedA && mainChanB.position >= 113624)) {
+		//if (mainChanA == null || mainChanB == null)	return;
+		if ((lastStartedA && mainChanA != null && mainChanA.position >= 113624) || (!lastStartedA && mainChanB != null && mainChanB.position >= 113624)) {
 			startAll();
 		}
 	}

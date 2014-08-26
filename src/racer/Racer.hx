@@ -12,6 +12,7 @@ import haxe.Timer;
 import Main;
 import Man;
 import racer.Entity.EEntityType;
+import screen.MenuScreen;
 import screen.Screen;
 
 /**
@@ -168,9 +169,11 @@ class Racer extends Screen {
 	}
 	
 	function endGame () {
+		MenuScreen.discovered[getIndex(level)] = true;
 		ScoreManager.save(level.getName(), (endTime - startTime), Main.pseudo);
 		SoundMan.ins.setActive(-1);
-		Man.ins.changeScreen(EScreen.MENU);
+		if (level == ELevel.LSquid)	Man.ins.changeScreen(EScreen.END);
+		else						Man.ins.changeScreen(EScreen.MENU);
 	}
 	
 	public function initMap (l:ELevel) {
@@ -460,6 +463,23 @@ class Racer extends Screen {
 		p.y = s.y + 8;
 		container.addChild(p.sprite);
 		particles.push(p);
+	}
+	
+	static public function getIndex (l:ELevel) :Int {
+		return switch (l) {
+			case ELevel.LBeluga:	0;
+			case ELevel.LOtter:		1;
+			case ELevel.LWalrus:	2;
+			case ELevel.LRusty:		3;
+			case ELevel.LBoat:		4;
+			case ELevel.LSeagull:	5;
+			case ELevel.LEel:		6;
+			case ELevel.LClam:		7;
+			case ELevel.LShark:		8;
+			case ELevel.LSpliff:	9;
+			case ELevel.LJellyfish:	10;
+			case ELevel.LSquid:		11;
+		}
 	}
 	
 }

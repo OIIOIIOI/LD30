@@ -2,6 +2,7 @@ package ;
 
 import flash.Lib;
 import racer.Racer;
+import screen.EndScreen;
 import screen.IntroScreen;
 import screen.MenuScreen;
 import screen.Screen;
@@ -40,6 +41,7 @@ class Man {
 			case EScreen.INTRO:				new IntroScreen();
 			case EScreen.TITLE:				new TitleScreen();
 			case EScreen.MENU:				new MenuScreen();
+			case EScreen.END:				new EndScreen();
 			case EScreen.RACER_BELUGA:		new Racer(ELevel.LBeluga);
 			case EScreen.RACER_BOAT:		new Racer(ELevel.LBoat);
 			case EScreen.RACER_CLAM:		new Racer(ELevel.LClam);
@@ -69,6 +71,7 @@ enum EScreen {
 	INTRO;
 	TITLE;
 	MENU;
+	END;
 	RACER_BELUGA;
 	RACER_BOAT;
 	RACER_CLAM;
